@@ -24,24 +24,17 @@
 		1EFA0EFD1DC6984700AE8FAA /* entities.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EFA0EFB1DC6975D00AE8FAA /* entities.h */; };
 		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
-		B533575009D72E5900893C2F /* CLIPSConstructInspectorController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B533574E09D72E5900893C2F /* CLIPSConstructInspectorController.h */; };
 		B533575109D72E5900893C2F /* CLIPSConstructInspectorController.m in Sources */ = {isa = PBXBuildFile; fileRef = B533574F09D72E5900893C2F /* CLIPSConstructInspectorController.m */; };
 		B53734AE09F946D60086408A /* userfunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = B53734AC09F946D60086408A /* userfunctions.c */; };
-		B53E50CD09B0FD8A00F72EB0 /* CLIPSTerminalView.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B53E50C909B0FD8A00F72EB0 /* CLIPSTerminalView.h */; };
 		B53E50CE09B0FD8A00F72EB0 /* CLIPSTerminalView.m in Sources */ = {isa = PBXBuildFile; fileRef = B53E50CA09B0FD8A00F72EB0 /* CLIPSTerminalView.m */; };
-		B53E50CF09B0FD8A00F72EB0 /* PreferenceController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B53E50CB09B0FD8A00F72EB0 /* PreferenceController.h */; };
 		B53E50D009B0FD8A00F72EB0 /* PreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = B53E50CC09B0FD8A00F72EB0 /* PreferenceController.m */; };
-		B53E50DA09B1046500F72EB0 /* CLIPSTerminalController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B53E50D809B1046500F72EB0 /* CLIPSTerminalController.h */; };
 		B53E50DB09B1046500F72EB0 /* CLIPSTerminalController.m in Sources */ = {isa = PBXBuildFile; fileRef = B53E50D909B1046500F72EB0 /* CLIPSTerminalController.m */; };
-		B5491E7A0BB18E2C00206EA5 /* ModuleArrayController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5491E780BB18E2C00206EA5 /* ModuleArrayController.h */; };
 		B5491E7B0BB18E2C00206EA5 /* ModuleArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5491E790BB18E2C00206EA5 /* ModuleArrayController.m */; };
 		B549629209BA9D6100697F33 /* CogDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = B549628F09BA9D6100697F33 /* CogDown.tiff */; };
 		B549629309BA9D6100697F33 /* CogGreyed.tiff in Resources */ = {isa = PBXBuildFile; fileRef = B549629009BA9D6100697F33 /* CogGreyed.tiff */; };
 		B549629409BA9D6100697F33 /* CogUp.tiff in Resources */ = {isa = PBXBuildFile; fileRef = B549629109BA9D6100697F33 /* CogUp.tiff */; };
 		B54DCD591EE1D72400014CEC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B54DCD581EE1D72400014CEC /* Images.xcassets */; };
-		B571D71B09D5E026003FCD41 /* CLIPSTerminalGlue.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B571D71909D5E026003FCD41 /* CLIPSTerminalGlue.h */; };
 		B571D72509D5E0D4003FCD41 /* CLIPSTerminalGlue.m in Sources */ = {isa = PBXBuildFile; fileRef = B571D72409D5E0D4003FCD41 /* CLIPSTerminalGlue.m */; };
-		B57AFA0C0BA9F90F002491B9 /* CLIPSModule.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B57AFA0A0BA9F90F002491B9 /* CLIPSModule.h */; };
 		B57AFA0D0BA9F90F002491B9 /* CLIPSModule.m in Sources */ = {isa = PBXBuildFile; fileRef = B57AFA0B0BA9F90F002491B9 /* CLIPSModule.m */; };
 		B59979A90D4D9B9E00C9B896 /* agenda.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEF5B09AD245A000E597B /* agenda.c */; };
 		B59979AA0D4D9B9E00C9B896 /* analysis.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEF5D09AD245A000E597B /* analysis.c */; };
@@ -209,17 +202,11 @@
 		B5997A510D4D9B9E00C9B896 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = B5134C1A0B9F9D5A007B3571 /* main.c */; };
 		B59D1400179C5C1A00E1A6C7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59D13FF179C5C1A00E1A6C7 /* Cocoa.framework */; };
 		B59D1401179C5C9600E1A6C7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59D13FF179C5C1A00E1A6C7 /* Cocoa.framework */; };
-		B5AF77140BA89B360090AC5E /* CLIPSAgendaController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5AF77130BA89B360090AC5E /* CLIPSAgendaController.h */; };
 		B5AF77160BA89B760090AC5E /* CLIPSFactController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5AF77150BA89B750090AC5E /* CLIPSFactController.m */; };
-		B5B1B53A09CDE36A00F76417 /* CLIPSActivation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5B1B53609CDE36A00F76417 /* CLIPSActivation.h */; };
 		B5B1B53B09CDE36A00F76417 /* CLIPSActivation.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B1B53709CDE36A00F76417 /* CLIPSActivation.m */; };
-		B5B1B53C09CDE36A00F76417 /* CLIPSFactController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5B1B53809CDE36A00F76417 /* CLIPSFactController.h */; };
 		B5B1B53D09CDE36A00F76417 /* CLIPSAgendaController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B1B53909CDE36A00F76417 /* CLIPSAgendaController.m */; };
-		B5B1B54609CDE38600F76417 /* CLIPSFocus.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5B1B54009CDE38600F76417 /* CLIPSFocus.h */; };
 		B5B1B54709CDE38600F76417 /* CLIPSFocus.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B1B54109CDE38600F76417 /* CLIPSFocus.m */; };
-		B5B1B54809CDE38600F76417 /* CLIPSTextView.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5B1B54209CDE38600F76417 /* CLIPSTextView.h */; };
 		B5B1B54909CDE38600F76417 /* CLIPSTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B1B54309CDE38600F76417 /* CLIPSTextView.m */; };
-		B5B1B57A09CDE69F00F76417 /* CLIPSFactInstance.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5B1B57809CDE69F00F76417 /* CLIPSFactInstance.h */; };
 		B5B1B57B09CDE69F00F76417 /* CLIPSFactInstance.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B1B57909CDE69F00F76417 /* CLIPSFactInstance.m */; };
 		B5BCF0AF09AD245B000E597B /* agenda.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEF5B09AD245A000E597B /* agenda.c */; };
 		B5BCF0B009AD245B000E597B /* agenda.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCEF5C09AD245A000E597B /* agenda.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -556,11 +543,8 @@
 		B5BCF3AE09AD30A1000E597B /* CLIPS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5BCEF5509AD23BF000E597B /* CLIPS.framework */; };
 		B5BCF45F09AD30F4000E597B /* CLIPS.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5BCEF5509AD23BF000E597B /* CLIPS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B5CE5D870D7DB62B002166A8 /* CLIPSInstanceController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CE5D860D7DB62B002166A8 /* CLIPSInstanceController.m */; };
-		B5FB532109AD41E2001AE877 /* CLIPSEnvironment.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5FB531709AD41E2001AE877 /* CLIPSEnvironment.h */; };
 		B5FB532209AD41E2001AE877 /* CLIPSEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = B5FB531809AD41E2001AE877 /* CLIPSEnvironment.m */; };
-		B5FB532509AD41E2001AE877 /* CLIPSTextDocument.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5FB531B09AD41E2001AE877 /* CLIPSTextDocument.h */; };
 		B5FB532609AD41E2001AE877 /* CLIPSTextDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = B5FB531C09AD41E2001AE877 /* CLIPSTextDocument.m */; };
-		B5FB532709AD41E2001AE877 /* AppController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5FB531D09AD41E2001AE877 /* AppController.h */; };
 		B5FB532809AD41E2001AE877 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5FB531E09AD41E2001AE877 /* AppController.m */; };
 		B5FB532C09AD4203001AE877 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B5FB532B09AD4203001AE877 /* main.m */; };
 /* End PBXBuildFile section */
@@ -583,22 +567,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				B5BCF45F09AD30F4000E597B /* CLIPS.framework in CopyFiles */,
-				B5FB532109AD41E2001AE877 /* CLIPSEnvironment.h in CopyFiles */,
-				B5FB532509AD41E2001AE877 /* CLIPSTextDocument.h in CopyFiles */,
-				B5FB532709AD41E2001AE877 /* AppController.h in CopyFiles */,
-				B53E50CD09B0FD8A00F72EB0 /* CLIPSTerminalView.h in CopyFiles */,
-				B53E50CF09B0FD8A00F72EB0 /* PreferenceController.h in CopyFiles */,
-				B53E50DA09B1046500F72EB0 /* CLIPSTerminalController.h in CopyFiles */,
-				B5B1B53A09CDE36A00F76417 /* CLIPSActivation.h in CopyFiles */,
-				B5B1B53C09CDE36A00F76417 /* CLIPSFactController.h in CopyFiles */,
-				B5B1B54609CDE38600F76417 /* CLIPSFocus.h in CopyFiles */,
-				B5B1B54809CDE38600F76417 /* CLIPSTextView.h in CopyFiles */,
-				B5B1B57A09CDE69F00F76417 /* CLIPSFactInstance.h in CopyFiles */,
-				B571D71B09D5E026003FCD41 /* CLIPSTerminalGlue.h in CopyFiles */,
-				B533575009D72E5900893C2F /* CLIPSConstructInspectorController.h in CopyFiles */,
-				B5AF77140BA89B360090AC5E /* CLIPSAgendaController.h in CopyFiles */,
-				B57AFA0C0BA9F90F002491B9 /* CLIPSModule.h in CopyFiles */,
-				B5491E7A0BB18E2C00206EA5 /* ModuleArrayController.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
