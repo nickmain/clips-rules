@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/25/18             */
+   /*            CLIPS Version 6.40  10/30/20             */
    /*                                                     */
    /*            SYSTEM DEPENDENT HEADER FILE             */
    /*******************************************************/
@@ -74,6 +74,8 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*      6.32: GenWrite returns number of bytes written.      */
+/*                                                           */
 /*      6.40: Added genchdir function for changing the       */
 /*            current directory.                             */
 /*                                                           */
@@ -107,7 +109,7 @@
 
    double                      gentime(void);
    int                         gensystem(Environment *,const char *);
-   int                         GenOpenReadBinary(Environment *,const char *,const char *);
+   bool                        GenOpenReadBinary(Environment *,const char *,const char *);
    void                        GetSeekCurBinary(Environment *,long);
    void                        GetSeekSetBinary(Environment *,long);
    void                        GenTellBinary(Environment *,long *);
@@ -125,7 +127,7 @@
    bool                        genremove(Environment *,const char *);
    bool                        genrename(Environment *,const char *,const char *);
    char                       *gengetcwd(char *,int);
-   void                        GenWrite(void *,size_t,FILE *);
+   size_t                      GenWrite(void *,size_t,FILE *);
    int                       (*SetBeforeOpenFunction(Environment *,int (*)(Environment *)))(Environment *);
    int                       (*SetAfterOpenFunction(Environment *,int (*)(Environment *)))(Environment *);
    int                         gensprintf(char *,const char *,...);

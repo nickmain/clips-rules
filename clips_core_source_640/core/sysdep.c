@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/18             */
+   /*            CLIPS Version 6.40  10/30/20             */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -74,6 +74,10 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.31: Compiler warning fix.                          */
+/*                                                           */
+/*      6.32: GenWrite returns number of bytes written.      */
 /*                                                           */
 /*      6.40: Added genchdir function for changing the       */
 /*            current directory.                             */
@@ -698,7 +702,7 @@ int GenSeek(
 /*   open at a time when using this function since the file */
 /*   pointer is stored in a global variable.                */
 /************************************************************/
-int GenOpenReadBinary(
+bool GenOpenReadBinary(
   Environment *theEnv,
   const char *funcName,
   const char *fileName)
@@ -712,7 +716,7 @@ int GenOpenReadBinary(
      {
       if (SystemDependentData(theEnv)->AfterOpenFunction != NULL)
         { (*SystemDependentData(theEnv)->AfterOpenFunction)(theEnv); }
-      return 0;
+      return false;
      }
 #endif
 
@@ -721,14 +725,14 @@ int GenOpenReadBinary(
      {
       if (SystemDependentData(theEnv)->AfterOpenFunction != NULL)
         { (*SystemDependentData(theEnv)->AfterOpenFunction)(theEnv); }
-      return 0;
+      return false;
      }
 #endif
 
    if (SystemDependentData(theEnv)->AfterOpenFunction != NULL)
      { (*SystemDependentData(theEnv)->AfterOpenFunction)(theEnv); }
 
-   return 1;
+   return true;
   }
 
 /***********************************************/
@@ -837,15 +841,15 @@ void GenCloseBinary(
 /* GenWrite: Generic routine for writing to a  */
 /*   file. No machine specific code as of yet. */
 /***********************************************/
-void GenWrite(
+size_t GenWrite(
   void *dataPtr,
   size_t size,
   FILE *fp)
   {
-   if (size == 0) return;
-#if UNIX_7
-   fwrite(dataPtr,size,1,fp);
-#else
-   fwrite(dataPtr,size,1,fp);
-#endif
+   if (size == 0) return 0;
+
+   if (fwrite(dataPtr,size,1,fp) != 1)
+     { return 0; }
+
+   return size;
   }
