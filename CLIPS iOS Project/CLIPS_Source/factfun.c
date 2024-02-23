@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  05/29/19             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*               FACT FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -95,6 +95,9 @@
 /*            name argument.                                 */
 /*                                                           */
 /*            Added fact-addressp function.                  */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -662,7 +665,7 @@ Fact *GetFactAddressOrIndexArgument(
       theFact = FindIndexedFact(theEnv,factIndex);
       if ((theFact == NULL) && noFactError)
         {
-         gensprintf(tempBuffer,"f-%lld",factIndex);
+         gensnprintf(tempBuffer,sizeof(tempBuffer),"f-%lld",factIndex);
          CantFindItemErrorMessage(theEnv,"fact",tempBuffer,false);
          return NULL;
         }

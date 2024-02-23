@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  02/20/20             */
+   /*            CLIPS Version 6.41  08/16/22             */
    /*                                                     */
    /*        FACT LOAD/SAVE (ASCII/BINARY) MODULE         */
    /*******************************************************/
@@ -16,6 +16,8 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.32: Fixed load-facts garbage collection issue.     */
 /*                                                           */
 /*      6.40: New file for save-facts and load-facts.        */
 /*                                                           */
@@ -569,7 +571,9 @@ long LoadFacts(
       else
         {
          factCount++;
+         ExpressionInstall(theEnv,testPtr);
          EvaluateExpression(theEnv,testPtr,&rv);
+         ExpressionDeinstall(theEnv,testPtr);
         }
       ReturnExpression(theEnv,testPtr);
      }

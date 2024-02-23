@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  05/03/19             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                    BLOAD MODULE                     */
    /*******************************************************/
@@ -49,6 +49,9 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
+/*                                                           */
 /*************************************************************/
 
 #include "setup.h"
@@ -88,8 +91,9 @@ void InitializeBloadData(
   Environment *theEnv)
   {
    char sizeBuffer[20];
-   sprintf(sizeBuffer,"%2zu%2zu%2zu%2zu%2zu",sizeof(void *),sizeof(double),
-                                             sizeof(int),sizeof(long),sizeof(long long));
+   gensnprintf(sizeBuffer,sizeof(sizeBuffer),
+               "%2zu%2zu%2zu%2zu%2zu",sizeof(void *),sizeof(double),
+               sizeof(int),sizeof(long),sizeof(long long));
 
    AllocateEnvironmentData(theEnv,BLOAD_DATA,sizeof(struct bloadData),NULL);
    AddEnvironmentCleanupFunction(theEnv,"bload",DeallocateBloadData,-1500);

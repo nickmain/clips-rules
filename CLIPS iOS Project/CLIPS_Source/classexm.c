@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/22/18             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                 CLASS EXAMINATION MODULE            */
    /*******************************************************/
@@ -61,6 +61,9 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /**************************************************************/
 
@@ -270,23 +273,11 @@ void DescribeClass(
         maxSlotNameLength = 16;
       if (maxOverrideMessageLength > 12)
         maxOverrideMessageLength = 12;
-/*        
-#if WIN_MVC
-      gensprintf(slotNamePrintFormat,"%%-%Id.%Ids : ",maxSlotNameLength,maxSlotNameLength);
-      gensprintf(overrideMessagePrintFormat,"%%-%Id.%Ids ",maxOverrideMessageLength,
+
+      gensnprintf(slotNamePrintFormat,sizeof(slotNamePrintFormat),"%%-%zd.%zds : ",maxSlotNameLength,maxSlotNameLength);
+      gensnprintf(overrideMessagePrintFormat,sizeof(overrideMessagePrintFormat),"%%-%zd.%zds ",maxOverrideMessageLength,
                                               maxOverrideMessageLength);
-#elif WIN_GCC
-      gensprintf(slotNamePrintFormat,"%%-%ld.%lds : ",(long) maxSlotNameLength,(long) maxSlotNameLength);
-      gensprintf(overrideMessagePrintFormat,"%%-%ld.%lds ",(long) maxOverrideMessageLength,
-                                            (long) maxOverrideMessageLength);
-#else
-*/
-      gensprintf(slotNamePrintFormat,"%%-%zd.%zds : ",maxSlotNameLength,maxSlotNameLength);
-      gensprintf(overrideMessagePrintFormat,"%%-%zd.%zds ",maxOverrideMessageLength,
-                                              maxOverrideMessageLength);
-/*
-#endif
-*/
+
       DisplaySlotBasicInfo(theEnv,logicalName,slotNamePrintFormat,overrideMessagePrintFormat,buf,theDefclass);
       WriteString(theEnv,logicalName,"\nConstraint information for slots:\n\n");
       DisplaySlotConstraintInfo(theEnv,logicalName,slotNamePrintFormat,buf,82,theDefclass);

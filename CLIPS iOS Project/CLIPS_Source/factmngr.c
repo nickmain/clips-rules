@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  05/03/19             */
+   /*            CLIPS Version 6.41  03/15/23             */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -113,6 +113,18 @@
 /*                                                           */
 /*            Pretty print functions accept optional logical */
 /*            name argument.                                 */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
+/*                                                           */
+/*            Missing break statement in AssertString switch */
+/*            block.                                         */
+/*                                                           */
+/*            Calling FMPutSlot with empty multifield to     */
+/*            multifield slot did not assign value.          */
+/*                                                           */
+/*            FMModify was releasing a multifield that was   */
+/*            allocated to the fact just modified.           */
 /*                                                           */
 /*************************************************************/
 
@@ -342,7 +354,7 @@ void PrintFactWithIdentifier(
   {
    char printSpace[20];
 
-   gensprintf(printSpace,"f-%-5lld ",factPtr->factIndex);
+   gensnprintf(printSpace,sizeof(printSpace),"f-%-5lld ",factPtr->factIndex);
    WriteString(theEnv,logicalName,printSpace);
    PrintFact(theEnv,logicalName,factPtr,false,false,changeMap);
   }
@@ -357,7 +369,7 @@ void PrintFactIdentifier(
   {
    char printSpace[20];
 
-   gensprintf(printSpace,"f-%lld",factPtr->factIndex);
+   gensnprintf(printSpace,sizeof(printSpace),"f-%lld",factPtr->factIndex);
    WriteString(theEnv,logicalName,printSpace);
   }
 
@@ -1815,6 +1827,7 @@ Fact *AssertString(
              
       case AE_COULD_NOT_ASSERT_ERROR:
         FactData(theEnv)->assertStringError = ASE_COULD_NOT_ASSERT_ERROR;
+        break;
         
       case AE_RULE_NETWORK_ERROR:
         FactData(theEnv)->assertStringError = ASE_RULE_NETWORK_ERROR;
@@ -3051,7 +3064,8 @@ PutSlotError FMPutSlot(
          return PSE_NO_ERROR;
         }
 
-      if (MultifieldsEqual(oldValue.multifieldValue,slotValue->multifieldValue))
+      if ((oldValue.header->type == MULTIFIELD_TYPE) &&
+          MultifieldsEqual(oldValue.multifieldValue,slotValue->multifieldValue))
         { return PSE_NO_ERROR; }
      }
    else
@@ -3093,6 +3107,8 @@ Fact *FMModify(
   {
    Environment *theEnv;
    Fact *rv;
+   GCBlock gcb;
+   unsigned int i;
    
    if (theFM == NULL)
      { return NULL; }
@@ -3128,8 +3144,18 @@ Fact *FMModify(
    else
      { FactData(theEnv)->factModifierError = FME_NO_ERROR; }
 
-   FMAbort(theFM);
-   
+   GCBlockStart(theEnv,&gcb);
+
+   for (i = 0; i < theFM->fmOldFact->whichDeftemplate->numberOfSlots; i++)
+     {
+      Release(theEnv,theFM->fmValueArray[i].header);
+      theFM->fmValueArray[i].voidValue = theFM->fmEnv->VoidConstant;
+     }
+      
+   ClearBitString((void *) theFM->changeMap,CountToBitMapSize(theFM->fmOldFact->whichDeftemplate->numberOfSlots));
+     
+   GCBlockEnd(theEnv,&gcb);
+
    if ((rv != NULL) && (rv != theFM->fmOldFact))
      {
       ReleaseFact(theFM->fmOldFact);

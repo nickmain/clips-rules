@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  10/03/19             */
+   /*            CLIPS Version 6.41  01/29/23             */
    /*                                                     */
    /*                    AGENDA MODULE                    */
    /*******************************************************/
@@ -55,6 +55,12 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
+/*                                                           */
+/*            Added ExitRouter after SystemError call in     */
+/*            DetachActivation.                              */
 /*                                                           */
 /*************************************************************/
 
@@ -541,7 +547,11 @@ bool DetachActivation(
    /* A NULL pointer is invalid. */
    /*============================*/
 
-   if (theActivation == NULL) SystemError(theEnv,"AGENDA",1);
+   if (theActivation == NULL)
+     {
+      SystemError(theEnv,"AGENDA",1);
+      ExitRouter(theEnv,EXIT_FAILURE);
+     }
 
    /*====================================*/
    /* Determine the module of the agenda */
@@ -601,7 +611,7 @@ static void PrintActivation(
   {
    char printSpace[20];
 
-   gensprintf(printSpace,"%-6d ",theActivation->salience);
+   gensnprintf(printSpace,sizeof(printSpace),"%-6d ",theActivation->salience);
    WriteString(theEnv,logicalName,printSpace);
    WriteString(theEnv,logicalName,theActivation->theRule->header.name->contents);
    WriteString(theEnv,logicalName,": ");

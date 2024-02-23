@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  10/28/20             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                RULE COMMANDS MODULE                 */
    /*******************************************************/
@@ -70,6 +70,9 @@
 /*            Incremental reset is always enabled.           */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -845,7 +848,7 @@ static const char *BetaHeaderString(
 
       theInfo = &infoArray[startPosition];
 
-      gensprintf(buffer,"%d",theInfo->whichCE);
+      gensnprintf(buffer,sizeof(buffer),"%d",theInfo->whichCE);
       returnString = AppendStrings(theEnv,returnString,buffer);
 
       if (nestedCEs)
@@ -853,17 +856,17 @@ static const char *BetaHeaderString(
          if (theInfo->patternBegin == theInfo->patternEnd)
            {
             returnString = AppendStrings(theEnv,returnString," (P");
-            gensprintf(buffer,"%d",theInfo->patternBegin);
+            gensnprintf(buffer,sizeof(buffer),"%d",theInfo->patternBegin);
             returnString = AppendStrings(theEnv,returnString,buffer);
             returnString = AppendStrings(theEnv,returnString,")");
            }
          else
            {
             returnString = AppendStrings(theEnv,returnString," (P");
-            gensprintf(buffer,"%d",theInfo->patternBegin);
+            gensnprintf(buffer,sizeof(buffer),"%d",theInfo->patternBegin);
             returnString = AppendStrings(theEnv,returnString,buffer);
             returnString = AppendStrings(theEnv,returnString," - P");
-            gensprintf(buffer,"%d",theInfo->patternEnd);
+            gensnprintf(buffer,sizeof(buffer),"%d",theInfo->patternEnd);
             returnString = AppendStrings(theEnv,returnString,buffer);
             returnString = AppendStrings(theEnv,returnString,")");
            }
@@ -874,7 +877,7 @@ static const char *BetaHeaderString(
          theInfo = &infoArray[endPosition];
 
          returnString = AppendStrings(theEnv,returnString," - ");
-         gensprintf(buffer,"%d",theInfo->whichCE);
+         gensnprintf(buffer,sizeof(buffer),"%d",theInfo->whichCE);
          returnString = AppendStrings(theEnv,returnString,buffer);
 
          if (nestedCEs)
@@ -882,17 +885,17 @@ static const char *BetaHeaderString(
             if (theInfo->patternBegin == theInfo->patternEnd)
               {
                returnString = AppendStrings(theEnv,returnString," (P");
-               gensprintf(buffer,"%d",theInfo->patternBegin);
+               gensnprintf(buffer,sizeof(buffer),"%d",theInfo->patternBegin);
                returnString = AppendStrings(theEnv,returnString,buffer);
                returnString = AppendStrings(theEnv,returnString,")");
               }
             else
               {
                returnString = AppendStrings(theEnv,returnString," (P");
-               gensprintf(buffer,"%d",theInfo->patternBegin);
+               gensnprintf(buffer,sizeof(buffer),"%d",theInfo->patternBegin);
                returnString = AppendStrings(theEnv,returnString,buffer);
                returnString = AppendStrings(theEnv,returnString," - P");
-               gensprintf(buffer,"%d",theInfo->patternEnd);
+               gensnprintf(buffer,sizeof(buffer),"%d",theInfo->patternEnd);
                returnString = AppendStrings(theEnv,returnString,buffer);
                returnString = AppendStrings(theEnv,returnString,")");
               }
@@ -1148,7 +1151,7 @@ static const char *ActivityHeaderString(
       theJoin = theJoin->lastLevel;
      }
 
-   gensprintf(buffer,"%d",theInfo->whichCE);
+   gensnprintf(buffer,sizeof(buffer),"%d",theInfo->whichCE);
    returnString = AppendStrings(theEnv,returnString,buffer);
    if (nestedCEs == false)
      { return returnString; }
@@ -1156,7 +1159,7 @@ static const char *ActivityHeaderString(
    if (theInfo->patternBegin == theInfo->patternEnd)
      {
       returnString = AppendStrings(theEnv,returnString," (P");
-      gensprintf(buffer,"%d",theInfo->patternBegin);
+      gensnprintf(buffer,sizeof(buffer),"%d",theInfo->patternBegin);
       returnString = AppendStrings(theEnv,returnString,buffer);
 
       returnString = AppendStrings(theEnv,returnString,")");
@@ -1165,12 +1168,12 @@ static const char *ActivityHeaderString(
      {
       returnString = AppendStrings(theEnv,returnString," (P");
 
-      gensprintf(buffer,"%d",theInfo->patternBegin);
+      gensnprintf(buffer,sizeof(buffer),"%d",theInfo->patternBegin);
       returnString = AppendStrings(theEnv,returnString,buffer);
 
       returnString = AppendStrings(theEnv,returnString," - P");
 
-      gensprintf(buffer,"%d",theInfo->patternEnd);
+      gensnprintf(buffer,sizeof(buffer),"%d",theInfo->patternEnd);
       returnString = AppendStrings(theEnv,returnString,buffer);
 
       returnString = AppendStrings(theEnv,returnString,")");
@@ -1226,11 +1229,11 @@ static void ListBetaJoinActivity(
                      ActivityHeaderString(theEnv,infoArray,joinIndex,arraySize));
       WriteString(theEnv,STDOUT,"\n");
 
-      sprintf(buffer,"   Compares: %10lld\n",compares);
+      gensnprintf(buffer,sizeof(buffer),"   Compares: %10lld\n",compares);
       WriteString(theEnv,STDOUT,buffer);
-      sprintf(buffer,"   Adds:     %10lld\n",adds);
+      gensnprintf(buffer,sizeof(buffer),"   Adds:     %10lld\n",adds);
       WriteString(theEnv,STDOUT,buffer);
-      sprintf(buffer,"   Deletes:  %10lld\n",deletes);
+      gensnprintf(buffer,sizeof(buffer),"   Deletes:  %10lld\n",deletes);
       WriteString(theEnv,STDOUT,buffer);
      }
    else if (output == SUCCINCT)
@@ -1450,7 +1453,7 @@ static void ShowJoins(
          else
            { rhsType = ' '; }
 
-         gensprintf(buffer,"%2hu%c%c%c%c : ",joinList[numberOfJoins]->depth,
+         gensnprintf(buffer,sizeof(buffer),"%2hu%c%c%c%c : ",joinList[numberOfJoins]->depth,
                                      (joinList[numberOfJoins]->firstJoin) ? 'f' : ' ',
                                      rhsType,
                                      (joinList[numberOfJoins]->joinFromTheRight) ? 'j' : ' ',
@@ -1495,7 +1498,7 @@ static void ShowJoins(
               { WriteString(theEnv,STDOUT,"None\n"); }
             else
               {
-               sprintf(buffer,"%lu\n",count);
+               gensnprintf(buffer,sizeof(buffer),"%lu\n",count);
                WriteString(theEnv,STDOUT,buffer);
               }
            }
@@ -1508,7 +1511,7 @@ static void ShowJoins(
               { WriteString(theEnv,STDOUT,"None\n"); }
             else
               {
-               sprintf(buffer,"%lu\n",count);
+               gensnprintf(buffer,sizeof(buffer),"%lu\n",count);
                WriteString(theEnv,STDOUT,buffer);
               }
            }
@@ -1550,7 +1553,7 @@ void ShowAlphaHashTable(
        if (count != 0)
          {
           totalCount += count;
-          gensprintf(buffer,"%4d: %4d ->",i,count);
+          gensnprintf(buffer,sizeof(buffer),"%4d: %4d ->",i,count);
           WriteString(theEnv,STDOUT,buffer);
 
           for (theEntry =  DefruleData(theEnv)->AlphaMemoryTable[i], count = 0;
@@ -1562,7 +1565,7 @@ void ShowAlphaHashTable(
                   theMatch = theMatch->nextInMemory)
                { count++; }
 
-             gensprintf(buffer," %4d",count);
+             gensnprintf(buffer,sizeof(buffer)," %4d",count);
              WriteString(theEnv,STDOUT,buffer);
              if (theEntry->owner->rightHash == NULL)
                { WriteString(theEnv,STDOUT,"*"); }
@@ -1571,7 +1574,7 @@ void ShowAlphaHashTable(
           WriteString(theEnv,STDOUT,"\n");
          }
       }
-    gensprintf(buffer,"Total Count: %ld\n",totalCount);
+    gensnprintf(buffer,sizeof(buffer),"Total Count: %ld\n",totalCount);
     WriteString(theEnv,STDOUT,buffer);
    }
 

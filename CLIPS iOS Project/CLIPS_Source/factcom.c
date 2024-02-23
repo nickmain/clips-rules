@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  10/28/20             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                FACT COMMANDS MODULE                 */
    /*******************************************************/
@@ -82,6 +82,9 @@
 /*                                                           */
 /*            Moved load-facts and save-facts functions to   */
 /*            factfile.c and factfile.h.                     */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -344,7 +347,7 @@ void RetractCommand(
          else
            {
             char tempBuffer[20];
-            gensprintf(tempBuffer,"f-%lld",factIndex);
+            gensnprintf(tempBuffer,sizeof(tempBuffer),"f-%lld",factIndex);
             CantFindItemErrorMessage(theEnv,"fact",tempBuffer,false);
            }
         }

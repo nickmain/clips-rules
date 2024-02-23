@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*               CONSTRAINT PARSER MODULE              */
    /*******************************************************/
@@ -39,6 +39,9 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -726,7 +729,7 @@ static bool ParseAllowedValuesAttribute(
            else
              {
               char tempBuffer[120];
-              gensprintf(tempBuffer,"%s attribute",constraintName);
+              gensnprintf(tempBuffer,sizeof(tempBuffer),"%s attribute",constraintName);
               SyntaxErrorMessage(theEnv,tempBuffer);
               return false;
              }
@@ -736,7 +739,7 @@ static bool ParseAllowedValuesAttribute(
          default:
            {
             char tempBuffer[120];
-            gensprintf(tempBuffer,"%s attribute",constraintName);
+            gensnprintf(tempBuffer,sizeof(tempBuffer),"%s attribute",constraintName);
             SyntaxErrorMessage(theEnv,tempBuffer);
            }
            return false;
@@ -764,7 +767,7 @@ static bool ParseAllowedValuesAttribute(
       if (constantParsed && variableParsed)
         {
          char tempBuffer[120];
-         gensprintf(tempBuffer,"%s attribute",constraintName);
+         gensnprintf(tempBuffer,sizeof(tempBuffer),"%s attribute",constraintName);
          SyntaxErrorMessage(theEnv,tempBuffer);
          return false;
         }
@@ -800,7 +803,7 @@ static bool ParseAllowedValuesAttribute(
    if ((! constantParsed) && (! variableParsed))
      {
       char tempBuffer[120];
-      gensprintf(tempBuffer,"%s attribute",constraintName);
+      gensnprintf(tempBuffer,sizeof(tempBuffer),"%s attribute",constraintName);
       SyntaxErrorMessage(theEnv,tempBuffer);
       return false;
      }
@@ -1135,7 +1138,7 @@ static bool ParseRangeCardinalityAttribute(
    else
      {
       char tempBuffer[120];
-      gensprintf(tempBuffer,"%s attribute",constraintName);
+      gensnprintf(tempBuffer,sizeof(tempBuffer),"%s attribute",constraintName);
       SyntaxErrorMessage(theEnv,tempBuffer);
       return false;
      }
@@ -1170,7 +1173,7 @@ static bool ParseRangeCardinalityAttribute(
    else
      {
       char tempBuffer[120];
-      gensprintf(tempBuffer,"%s attribute",constraintName);
+      gensnprintf(tempBuffer,sizeof(tempBuffer),"%s attribute",constraintName);
       SyntaxErrorMessage(theEnv,tempBuffer);
       return false;
      }

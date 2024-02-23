@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/25/16             */
+   /*            CLIPS Version 6.41  11/12/22             */
    /*                                                     */
    /*              RULE CONSTRAINTS MODULE                */
    /*******************************************************/
@@ -31,6 +31,9 @@
 /*            Static constraint checking is always enabled.  */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*      6.41: Fixed constraint violation error message that  */
+/*            should be variable not found error.            */
 /*                                                           */
 /*************************************************************/
 
@@ -820,6 +823,18 @@ static bool CheckArgumentForConstraintError(
 
    constraint3 = FindBindConstraints(theEnv,expressionList->lexemeValue);
 
+   /*==================================================*/
+   /* If the variable wasn't bound in the LHS or RHS,  */
+   /* then a constraint violation won't be flagged.    */
+   /* Other code will flag the unbound variable issue. */
+   /*==================================================*/
+   
+   if ((constraint2 == NULL) && (constraint3 == NULL))
+     {
+      RemoveConstraint(theEnv,constraint1);
+      return(rv);
+     }
+     
    /*====================================================*/
    /* Union the LHS and RHS variable binding constraints */
    /* (the variable must satisfy one or the other).      */

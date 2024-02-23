@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -18,33 +18,33 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="100" y="100" width="547" height="303"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="547" height="303"/>
+                <rect key="frame" x="0.0" y="0.0" width="550" height="303"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
-                        <rect key="frame" x="13" y="54" width="521" height="243"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                    <tabView translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                        <rect key="frame" x="13" y="54" width="524" height="243"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="227" id="php-3V-I7n"/>
+                        </constraints>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
                             <tabViewItem label="Dialog" identifier="dialog" id="84">
                                 <view key="view" id="85">
-                                    <rect key="frame" x="10" y="33" width="501" height="197"/>
+                                    <rect key="frame" x="10" y="33" width="504" height="197"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="86">
-                                            <rect key="frame" x="17" y="160" width="41" height="17"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="86">
+                                            <rect key="frame" x="17" y="161" width="35" height="16"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Font:" id="201">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="87">
-                                            <rect key="frame" x="58" y="150" width="100" height="32"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="87">
+                                            <rect key="frame" x="52" y="152" width="92" height="32"/>
                                             <buttonCell key="cell" type="push" title="Change..." bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="202">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -53,9 +53,8 @@
                                                 <action selector="changeEditorFont:" target="-2" id="89"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="88">
-                                            <rect key="frame" x="29" y="69" width="275" height="81"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="88">
+                                            <rect key="frame" x="29" y="40" width="70" height="110"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Font Name" id="203">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -77,9 +76,11 @@
                                                 <binding destination="101" name="fontSize" keyPath="values.dialogTextFontSize" previousBinding="ByQ-CB-sGu" id="VWe-6o-d79"/>
                                             </connections>
                                         </textField>
-                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="169">
-                                            <rect key="frame" x="18" y="18" width="150" height="18"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="169">
+                                            <rect key="frame" x="18" y="18" width="153" height="18"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="16" id="Ncl-JU-wbO"/>
+                                            </constraints>
                                             <buttonCell key="cell" type="check" title="Balance Parentheses" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="204">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -89,25 +90,37 @@
                                             </connections>
                                         </button>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="169" firstAttribute="leading" secondItem="85" secondAttribute="leading" constant="20" symbolic="YES" id="2Oq-uc-B0j"/>
+                                        <constraint firstItem="88" firstAttribute="leading" secondItem="85" secondAttribute="leading" constant="31" id="72j-Zi-UNX"/>
+                                        <constraint firstItem="87" firstAttribute="leading" secondItem="86" secondAttribute="trailing" constant="9" id="C9L-au-B6W"/>
+                                        <constraint firstItem="86" firstAttribute="leading" secondItem="85" secondAttribute="leading" constant="19" id="JgV-wB-DLr"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="88" secondAttribute="trailing" id="KcC-M2-SkA"/>
+                                        <constraint firstItem="86" firstAttribute="centerY" secondItem="87" secondAttribute="centerY" id="KkX-ON-XKK"/>
+                                        <constraint firstItem="169" firstAttribute="top" secondItem="88" secondAttribute="bottom" constant="5" id="bK0-hW-A2l"/>
+                                        <constraint firstItem="86" firstAttribute="top" secondItem="85" secondAttribute="top" constant="20" symbolic="YES" id="gxE-yj-84Q"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="87" secondAttribute="trailing" constant="367" id="isC-U0-sph"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="169" secondAttribute="trailing" constant="333" id="nwz-wF-ZjZ"/>
+                                        <constraint firstAttribute="bottom" secondItem="169" secondAttribute="bottom" constant="19" id="qt2-GP-ZO9"/>
+                                        <constraint firstItem="88" firstAttribute="top" secondItem="87" secondAttribute="bottom" constant="9" id="sjR-Qa-GSL"/>
+                                    </constraints>
                                 </view>
                             </tabViewItem>
                             <tabViewItem label="Editor" identifier="editor" id="efU-YV-0TG">
                                 <view key="view" id="3Y7-73-34B">
-                                    <rect key="frame" x="10" y="33" width="501" height="197"/>
+                                    <rect key="frame" x="10" y="33" width="504" height="197"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S3S-dq-8X0">
-                                            <rect key="frame" x="17" y="160" width="41" height="17"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="S3S-dq-8X0">
+                                            <rect key="frame" x="17" y="161" width="35" height="16"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Font:" id="Gnf-z0-8Da">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lif-I9-2fp">
-                                            <rect key="frame" x="58" y="150" width="100" height="32"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lif-I9-2fp">
+                                            <rect key="frame" x="52" y="152" width="92" height="32"/>
                                             <buttonCell key="cell" type="push" title="Change..." bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="8Yp-ae-uA5">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -116,9 +129,8 @@
                                                 <action selector="changeEditorFont:" target="-2" id="uuM-cF-e0T"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3ye-OP-Ere">
-                                            <rect key="frame" x="29" y="69" width="275" height="81"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="3ye-OP-Ere">
+                                            <rect key="frame" x="29" y="40" width="70" height="110"/>
                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Font Name" id="Ayo-5V-Tbr">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -140,9 +152,11 @@
                                                 <binding destination="101" name="fontSize" keyPath="values.editorTextFontSize" previousBinding="dsa-KA-lED" id="xcq-qm-fMs"/>
                                             </connections>
                                         </textField>
-                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mw1-yi-xec">
-                                            <rect key="frame" x="18" y="18" width="150" height="18"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="Mw1-yi-xec">
+                                            <rect key="frame" x="18" y="18" width="153" height="18"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="16" id="zc5-mQ-JBz"/>
+                                            </constraints>
                                             <buttonCell key="cell" type="check" title="Balance Parentheses" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="cj8-YJ-2bz">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -152,13 +166,26 @@
                                             </connections>
                                         </button>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Mw1-yi-xec" firstAttribute="leading" secondItem="3Y7-73-34B" secondAttribute="leading" constant="20" symbolic="YES" id="DWz-ua-nBE"/>
+                                        <constraint firstAttribute="bottom" secondItem="Mw1-yi-xec" secondAttribute="bottom" constant="19" id="KQC-xF-aSA"/>
+                                        <constraint firstItem="Mw1-yi-xec" firstAttribute="top" secondItem="3ye-OP-Ere" secondAttribute="bottom" constant="5" id="XeT-gn-xpZ"/>
+                                        <constraint firstItem="lif-I9-2fp" firstAttribute="centerY" secondItem="S3S-dq-8X0" secondAttribute="centerY" id="hoJ-mF-zFi"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lif-I9-2fp" secondAttribute="trailing" constant="367" id="iNS-qk-eDp"/>
+                                        <constraint firstItem="3ye-OP-Ere" firstAttribute="top" secondItem="lif-I9-2fp" secondAttribute="bottom" constant="9" id="lsM-Hn-2c1"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Mw1-yi-xec" secondAttribute="trailing" constant="333" id="rQL-q4-mOJ"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="3ye-OP-Ere" secondAttribute="trailing" constant="20" symbolic="YES" id="voc-Ni-LOe"/>
+                                        <constraint firstItem="S3S-dq-8X0" firstAttribute="top" secondItem="3Y7-73-34B" secondAttribute="top" constant="20" symbolic="YES" id="vtp-6o-MBX"/>
+                                        <constraint firstItem="S3S-dq-8X0" firstAttribute="leading" secondItem="3Y7-73-34B" secondAttribute="leading" constant="19" id="xJh-pl-AuT"/>
+                                        <constraint firstItem="3ye-OP-Ere" firstAttribute="leading" secondItem="3Y7-73-34B" secondAttribute="leading" constant="31" id="zGd-Zt-2wJ"/>
+                                        <constraint firstItem="lif-I9-2fp" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="S3S-dq-8X0" secondAttribute="trailing" constant="9" id="zcH-am-bee"/>
+                                    </constraints>
                                 </view>
                             </tabViewItem>
                         </tabViewItems>
                     </tabView>
-                    <button toolTip="Revert to default settings" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="120" userLabel="Defaults">
-                        <rect key="frame" x="445" y="12" width="91" height="32"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                    <button toolTip="Revert to default settings" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="120" userLabel="Defaults">
+                        <rect key="frame" x="454" y="12" width="85" height="32"/>
                         <buttonCell key="cell" type="push" title="Defaults" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="208">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -168,6 +195,15 @@
                         </connections>
                     </button>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="120" secondAttribute="bottom" constant="19" id="8wL-TM-VbP"/>
+                    <constraint firstItem="120" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" id="NQX-jo-cZY"/>
+                    <constraint firstItem="7" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="R5m-GT-TBe"/>
+                    <constraint firstItem="120" firstAttribute="top" secondItem="7" secondAttribute="bottom" constant="25" id="ZJ4-Tq-wdX"/>
+                    <constraint firstAttribute="trailing" secondItem="7" secondAttribute="trailing" constant="20" symbolic="YES" id="ZJx-qK-tRz"/>
+                    <constraint firstAttribute="trailing" secondItem="120" secondAttribute="trailing" constant="18" id="dcH-Ti-wit"/>
+                    <constraint firstItem="7" firstAttribute="top" secondItem="6" secondAttribute="top" constant="12" id="uAu-hg-O0n"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="91"/>

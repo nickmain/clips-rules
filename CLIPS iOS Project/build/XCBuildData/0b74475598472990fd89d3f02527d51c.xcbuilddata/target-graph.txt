@@ -1,0 +1,8 @@
+Target dependency graph (4 targets)
+CLIPSiOS in CLIPSiOS, no dependencies
+Animal in CLIPSiOS, depends on:
+CLIPSiOS in CLIPSiOS (explicit)
+Auto in CLIPSiOS, depends on:
+CLIPSiOS in CLIPSiOS (explicit)
+Wine in CLIPSiOS, depends on:
+CLIPSiOS in CLIPSiOS (explicit)

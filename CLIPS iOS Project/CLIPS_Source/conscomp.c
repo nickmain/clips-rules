@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  02/08/18            */
+   /*             CLIPS Version 6.41  12/04/22            */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -73,6 +73,9 @@
 /*            UDF redesign.                                  */
 /*                                                           */
 /*            Eval support for run time and bload only.      */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -1131,9 +1134,9 @@ struct CodeGeneratorItem *AddCodeGeneratorItem(
       for (i = 0 ; i < arrayCount ; i++)
         {
          if (ConstructCompilerData(theEnv)->CodeGeneratorCount < PRIMARY_LEN)
-           { gensprintf(theBuffer,"%c",PRIMARY_CODES[ConstructCompilerData(theEnv)->CodeGeneratorCount]); }
+           { gensnprintf(theBuffer,sizeof(theBuffer),"%c",PRIMARY_CODES[ConstructCompilerData(theEnv)->CodeGeneratorCount]); }
          else
-           { gensprintf(theBuffer,"%s_",SecondaryCodes[ConstructCompilerData(theEnv)->CodeGeneratorCount - PRIMARY_LEN]); }
+           { gensnprintf(theBuffer,sizeof(theBuffer),"%s_",SecondaryCodes[ConstructCompilerData(theEnv)->CodeGeneratorCount - PRIMARY_LEN]); }
          ConstructCompilerData(theEnv)->CodeGeneratorCount++;
          newPtr->arrayNames[i] = (char *) gm2(theEnv,(strlen(theBuffer) + 1));
          genstrcpy(newPtr->arrayNames[i],theBuffer);
@@ -1369,7 +1372,7 @@ FILE *OpenFileIfNeeded(
    if (reopenOldFile == false)
      {
       (*fileCount)++;
-      gensprintf(arrayName,"%s%d_%d",structPrefix,imageID,arrayVersion);
+      gensnprintf(arrayName,sizeof(arrayName),"%s%d_%d",structPrefix,imageID,arrayVersion);
       fprintf(theFile,"%s %s[] = {\n",structureName,arrayName);
       fprintf(headerFP,"extern %s %s[];\n",structureName,arrayName);
      }

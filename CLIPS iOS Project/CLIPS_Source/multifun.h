@@ -1,9 +1,9 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/25/16            */
+   /*             CLIPS Version 6.41  11/04/22            */
    /*                                                     */
-   /*           MULTIFIELD_TYPE FUNCTIONS HEADER FILE          */
+   /*        MULTIFIELD_TYPE FUNCTIONS HEADER FILE        */
    /*******************************************************/
 
 /*************************************************************/
@@ -51,6 +51,9 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
+/*      6.41: Added intersection$, union$, and difference$   */
+/*            functions.                                     */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_multifun
@@ -78,6 +81,9 @@
    void                    NthFunction(Environment *,UDFContext *,UDFValue *);
    void                    SubsetpFunction(Environment *,UDFContext *,UDFValue *);
    void                    MemberFunction(Environment *,UDFContext *,UDFValue *);
+   void                    IntersectionFunction(Environment *,UDFContext *,UDFValue *);
+   void                    UnionFunction(Environment *,UDFContext *,UDFValue *);
+   void                    DifferenceFunction(Environment *,UDFContext *,UDFValue *);
    void                    MultifieldPrognFunction(Environment *,UDFContext *,UDFValue *);
    void                    ForeachFunction(Environment *,UDFContext *,UDFValue *);
    void                    GetMvPrognField(Environment *,UDFContext *,UDFValue *);

@@ -778,7 +778,6 @@
 /***********************************************************/
 - (int) waitForChar
   {
-   NSRange theRange = { [[super string] length], 0 };
    charFound = -1;
 
    /*============================================*/
@@ -786,8 +785,12 @@
    /* so we can see the text being entered.      */
    /*============================================*/
    
-   [super scrollRangeToVisible: theRange]; 
-
+   dispatch_sync(dispatch_get_main_queue(),
+      ^{
+        NSRange theRange = { [[super string] length], 0 };
+        [super scrollRangeToVisible: theRange];
+       });
+      
    /*=====================================*/
    /* Check for queued input from a UTF-8 */
    /* character or a pasted string.       */
@@ -920,9 +923,6 @@
 /************************************************/
 - (BOOL) validateMenuItem: (NSMenuItem *) menuItem
   {
-   NSString *selectorString;
-   selectorString = NSStringFromSelector([menuItem action]);
-   
    /*============================================================*/
    /* The paste, cut, and delete actions are only allowed in the */
    /* terminal window when the selection is in the input area.   */

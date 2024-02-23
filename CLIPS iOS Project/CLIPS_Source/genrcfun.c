@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  02/20/20             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -53,6 +53,9 @@
 /*            data structures.                               */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -586,7 +589,7 @@ void PrintMethod(
    SBReset(theSB);
    if (meth->system)
      SBAppend(theSB,"SYS");
-   gensprintf(numbuf,"%-2hu ",meth->index);
+   gensnprintf(numbuf,sizeof(numbuf),"%-2hu ",meth->index);
    SBAppend(theSB,numbuf);
    for (j = 0 ; j < meth->restrictionCount ; j++)
      {

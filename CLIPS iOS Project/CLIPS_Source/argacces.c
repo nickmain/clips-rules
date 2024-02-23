@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  04/22/20             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*               ARGUMENT ACCESS MODULE                */
    /*******************************************************/
@@ -57,6 +57,9 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -477,7 +480,7 @@ void *GetFactOrInstanceArgument(
       if ((ptr = (void *) FindIndexedFact(theEnv,item->integerValue->contents)) == NULL)
         {
          char tempBuffer[20];
-         gensprintf(tempBuffer,"f-%lld",item->integerValue->contents);
+         gensnprintf(tempBuffer,sizeof(tempBuffer),"f-%lld",item->integerValue->contents);
          CantFindItemErrorMessage(theEnv,"fact",tempBuffer,false);
         }
       return ptr;

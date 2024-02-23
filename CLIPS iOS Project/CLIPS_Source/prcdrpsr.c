@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  02/19/20             */
+   /*            CLIPS Version 6.41  11/12/22             */
    /*                                                     */
    /*          PROCEDURAL FUNCTIONS PARSER MODULE         */
    /*******************************************************/
@@ -47,6 +47,9 @@
 /*            UDF redesign.                                  */
 /*                                                           */
 /*            Eval support for run time and bload only.      */
+/*                                                           */
+/*      6.41: Fixed invalid constraint conflict error        */
+/*            with bind function with multiple arguments.    */
 /*                                                           */
 /*************************************************************/
 
@@ -716,7 +719,15 @@ static struct expr *BindParse(
 #endif
 
    if (top->argList->nextArg != NULL)
-     { theConstraint = ExpressionToConstraintRecord(theEnv,top->argList->nextArg); }
+     {
+      if (top->argList->nextArg->nextArg != NULL)
+        {
+         theConstraint = GetConstraintRecord(theEnv);
+         theConstraint->multifieldsAllowed = true;
+        }
+      else
+        { theConstraint = ExpressionToConstraintRecord(theEnv,top->argList->nextArg); }
+     }
 
    AddBindName(theEnv,variableName,theConstraint);
 

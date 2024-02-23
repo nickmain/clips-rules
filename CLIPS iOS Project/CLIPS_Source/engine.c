@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  02/19/20             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -84,6 +84,9 @@
 /*                                                           */
 /*            Added GCBlockStart and GCBlockEnd functions    */
 /*            for garbage collection blocks.                 */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -309,7 +312,7 @@ long long Run(
         {
          char printSpace[60];
 
-         gensprintf(printSpace,"FIRE %4lld ",rulesFired);
+         gensnprintf(printSpace,sizeof(printSpace),"FIRE %4lld ",rulesFired);
          WriteString(theEnv,STDOUT,printSpace);
          WriteString(theEnv,STDOUT,ruleFiring);
          WriteString(theEnv,STDOUT,": ");
@@ -604,62 +607,62 @@ long long Run(
 #endif
 
 #if DEFTEMPLATE_CONSTRUCT
-      gensprintf(printSpace,"%ld mean number of facts (%ld maximum).\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%ld mean number of facts (%ld maximum).\n",
                           (long) (((double) sumFacts / (rulesFired + 1)) + 0.5),
                           maxFacts);
       WriteString(theEnv,STDOUT,printSpace);
 #endif
 
 #if OBJECT_SYSTEM
-      gensprintf(printSpace,"%ld mean number of instances (%ld maximum).\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%ld mean number of instances (%ld maximum).\n",
                           (long) (((double) sumInstances / (rulesFired + 1)) + 0.5),
                           maxInstances);
       WriteString(theEnv,STDOUT,printSpace);
 #endif
 
-      gensprintf(printSpace,"%ld mean number of activations (%ld maximum).\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%ld mean number of activations (%ld maximum).\n",
                           (long) (((double) sumActivations / (rulesFired + 1)) + 0.5),
                           maxActivations);
       WriteString(theEnv,STDOUT,printSpace);
 
 #if DEVELOPER
-      gensprintf(printSpace,"%9ld left to right comparisons.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld left to right comparisons.\n",
                           EngineData(theEnv)->leftToRightComparisons);
       WriteString(theEnv,STDOUT,printSpace);
 
-      gensprintf(printSpace,"%9ld left to right succeeds.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld left to right succeeds.\n",
                           EngineData(theEnv)->leftToRightSucceeds);
       WriteString(theEnv,STDOUT,printSpace);
 
-      gensprintf(printSpace,"%9ld left to right loops.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld left to right loops.\n",
                           EngineData(theEnv)->leftToRightLoops);
       WriteString(theEnv,STDOUT,printSpace);
 
-      gensprintf(printSpace,"%9ld right to left comparisons.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld right to left comparisons.\n",
                           EngineData(theEnv)->rightToLeftComparisons);
       WriteString(theEnv,STDOUT,printSpace);
 
-      gensprintf(printSpace,"%9ld right to left succeeds.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld right to left succeeds.\n",
                           EngineData(theEnv)->rightToLeftSucceeds);
       WriteString(theEnv,STDOUT,printSpace);
 
-      gensprintf(printSpace,"%9ld right to left loops.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld right to left loops.\n",
                           EngineData(theEnv)->rightToLeftLoops);
       WriteString(theEnv,STDOUT,printSpace);
 
-      gensprintf(printSpace,"%9ld find next conflicting comparisons.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld find next conflicting comparisons.\n",
                           EngineData(theEnv)->findNextConflictingComparisons);
       WriteString(theEnv,STDOUT,printSpace);
 
-      gensprintf(printSpace,"%9ld beta hash list skips.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld beta hash list skips.\n",
                           EngineData(theEnv)->betaHashListSkips);
       WriteString(theEnv,STDOUT,printSpace);
 
-      gensprintf(printSpace,"%9ld beta hash hash table skips.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld beta hash hash table skips.\n",
                           EngineData(theEnv)->betaHashHTSkips);
       WriteString(theEnv,STDOUT,printSpace);
 
-      gensprintf(printSpace,"%9ld unneeded marker compare.\n",
+      gensnprintf(printSpace,sizeof(printSpace),"%9ld unneeded marker compare.\n",
                           EngineData(theEnv)->unneededMarkerCompare);
       WriteString(theEnv,STDOUT,printSpace);
 

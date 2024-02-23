@@ -1389,14 +1389,7 @@
    haltTimer = nil;
 
    [updateTimer invalidate];
-   updateTimer = nil;
-   
-   /*======================================*/
-   /* Get the default notification center. */
-   /*======================================*/
-      
-   NSNotificationCenter *nc;
-   nc = [NSNotificationCenter defaultCenter];
+   updateTimer = nil;   
   }
 
 /************************************************/
@@ -1676,7 +1669,30 @@
    if (! [textView balancingDisabled])
      { [textView balanceParentheses]; }
   }
-  
+ 
+/**************************************/
+/* textViewDidChangeTypingAttributes: */
+/**************************************/
+- (NSDictionary<NSAttributedStringKey, id> *) textView: (NSTextView *) theTextView
+                          shouldChangeTypingAttributes: (NSDictionary<NSString *,id> *) oldTypingAttributes
+                                          toAttributes: (NSDictionary<NSAttributedStringKey, id> *) newTypingAttributes
+  {
+   NSFont *theFont = [newTypingAttributes valueForKey: NSFontAttributeName];
+   
+   NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+   [style setDefaultTabInterval: 3.0 * theFont.maximumAdvancement.width];
+   [style setTabStops: [NSArray array]];
+   
+   theTextView.defaultParagraphStyle = style;
+   
+   NSMutableDictionary *addedTabs = [NSMutableDictionary dictionaryWithDictionary: newTypingAttributes];
+   [addedTabs setObject: style forKey: NSParagraphStyleAttributeName];
+   
+   [[theTextView textStorage] addAttributes: addedTabs range: NSMakeRange(0, [[[theTextView textStorage] string] length])];
+
+   return addedTabs;
+  }
+
 /*%%%%%%%%%%%%%%%%*/
 /* Unused Methods */
 /*%%%%%%%%%%%%%%%%*/

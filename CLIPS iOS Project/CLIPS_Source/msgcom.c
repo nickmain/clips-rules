@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  02/19/20             */
+   /*            CLIPS Version 6.41  01/29/23             */
    /*                                                     */
    /*                OBJECT MESSAGE COMMANDS              */
    /*******************************************************/
@@ -56,6 +56,10 @@
 /*                                                           */
 /*            Pretty print functions accept optional logical */
 /*            name argument.                                 */
+/*                                                           */
+/*      6.41: Changed function ListDefmessageHandlers to     */
+/*            dynamically allocate storage to remove         */
+/*            compiler warning for -Warray-bounds.           */                
 /*                                                           */
 /*************************************************************/
 
@@ -772,21 +776,25 @@ void ListDefmessageHandlers(
       else
         {
          plinks.classCount = 1;
-         plinks.classArray = &theDefclass;
+         plinks.classArray = (Defclass **) gm2(theEnv,(sizeof(Defclass *)));
+         plinks.classArray[0] = theDefclass;
          cnt = DisplayHandlersInLinks(theEnv,logName,&plinks,0);
+         rm(theEnv,plinks.classArray,(sizeof(Defclass *)));
         }
      }
    else
      {
       plinks.classCount = 1;
+      plinks.classArray = (Defclass **) gm2(theEnv,(sizeof(Defclass *)));
       cnt = 0L;
       for (theDefclass = GetNextDefclass(theEnv,NULL) ;
            theDefclass != NULL ;
            theDefclass = GetNextDefclass(theEnv,theDefclass))
         {
-         plinks.classArray = &theDefclass;
+         plinks.classArray[0] = theDefclass;
          cnt += DisplayHandlersInLinks(theEnv,logName,&plinks,0);
         }
+      rm(theEnv,plinks.classArray,(sizeof(Defclass *)));
      }
    PrintTally(theEnv,logName,cnt,"message-handler","message-handlers");
   }

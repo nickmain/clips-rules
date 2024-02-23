@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  10/18/16             */
+   /*            CLIPS Version 6.41  01/26/22             */
    /*                                                     */
    /*             CONSTRAINT UTILITY MODULE               */
    /*******************************************************/
@@ -32,6 +32,9 @@
 /*            UDF redesign.                                  */
 /*                                                           */
 /*            Eval support for run time and bload only.      */
+/*                                                           */
+/*      6.41: Fixed FunctionCallBuilder bug with external    */
+/*            and fact address arguments generating errors.  */
 /*                                                           */
 /*************************************************************/
 
@@ -476,9 +479,17 @@ CONSTRAINT_RECORD *ExpressionToConstraintRecord(
         rv->stringsAllowed = true;
         break;
         
+      case EXTERNAL_ADDRESS_TYPE:
+        rv->externalAddressesAllowed = true;
+        break;
+        
+      case FACT_ADDRESS_TYPE:
+        rv->factAddressesAllowed = true;
+        break;
+        
       case INSTANCE_NAME_TYPE:
-      rv->instanceNameRestriction = true;
-      rv->instanceNamesAllowed = true;
+        rv->instanceNameRestriction = true;
+        rv->instanceNamesAllowed = true;
         break;
         
       case INSTANCE_ADDRESS_TYPE:

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  04/08/20             */
+   /*            CLIPS Version 6.41  03/11/23             */
    /*                                                     */
    /*          INSTANCE PRIMITIVE SUPPORT MODULE          */
    /*******************************************************/
@@ -44,6 +44,10 @@
 /*            is based on both the existence and             */
 /*            non-existence of an instance.                  */
 /*                                                           */
+/*      6.32: Fixed instance redefinition crash with rules   */      
+/*            in JNSimpleCompareFunction1 when deleted       */
+/*            instance slots are referenced.                 */
+/*                                                           */
 /*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
@@ -55,6 +59,15 @@
 /*            data structures.                               */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*      6.41: Instance builders and modifiers were not       */
+/*            allocating storage for inherited slots.        */
+/*                                                           */
+/*            Removed unnecessary variable initialization    */
+/*            in IBAbort.                                     */
+/*                                                           */
+/*            Calling IMPutSlot with empty multifield to     */
+/*            multifield slot did not assign value.          */
 /*                                                           */
 /*************************************************************/
 
@@ -72,6 +85,7 @@
 #include "drive.h"
 #include "objrtmch.h"
 #include "lgcldpnd.h"
+#include "objrtfnx.h"
 #endif
 
 #include "classcom.h"
@@ -530,6 +544,8 @@ UnmakeInstanceError QuashInstance(
    IGARBAGE *gptr;
 
 #if DEFRULE_CONSTRUCT
+   int syncFlag;
+   
    if (EngineData(theEnv)->JoinOperationInProgress && ins->cls->reactive)
      {
       PrintErrorID(theEnv,"INSMNGR",12,false);
@@ -564,6 +580,7 @@ UnmakeInstanceError QuashInstance(
 #endif
 
 #if DEFRULE_CONSTRUCT
+   syncFlag = ins->reteSynchronized;
    RemoveEntityDependencies(theEnv,(struct patternEntity *) ins);
 
    if (ins->cls->reactive)
@@ -607,13 +624,20 @@ UnmakeInstanceError QuashInstance(
       rule, don't bother deleting its slots yet, for
       they may still be needed by pattern variables
       ============================================== */
+      
 #if DEFRULE_CONSTRUCT
-   if ((iflag == 1)
-       && (ins->patternHeader.busyCount == 0))
+   if ((iflag == 1) && (ins->patternHeader.busyCount == 0))
+     {
+      if ((ObjectReteData(theEnv)->DelayObjectPatternMatching == false) ||
+          (syncFlag == false)) 
+        { RemoveInstanceData(theEnv,ins); }
+      else
+        { ins->dataRemovalDeferred = true; }
+     }
 #else
    if (iflag == 1)
+     { RemoveInstanceData(theEnv,ins); }
 #endif
-     RemoveInstanceData(theEnv,ins);
 
    if ((ins->busy == 0) &&
        (InstanceData(theEnv)->MaintainGarbageInstances == false)
@@ -732,6 +756,7 @@ static Instance *NewInstance(
    instance->partialMatchList = NULL;
    instance->basisSlots = NULL;
    instance->reteSynchronized = false;
+   instance->dataRemovalDeferred = false;
 #endif
    instance->patternHeader.header.type = INSTANCE_ADDRESS_TYPE;
    instance->busy = 0;
@@ -1179,7 +1204,7 @@ static bool InsertSlotOverridesCV(
 
    EvaluationData(theEnv)->EvaluationError = false;
 
-   for (i = 0; i < ins->cls->slotCount; i++)
+   for (i = 0; i < ins->cls->instanceSlotCount; i++)
      {
       if (overrides[i].value == VoidConstant(theEnv)) continue;
       
@@ -1327,13 +1352,13 @@ InstanceBuilder *CreateInstanceBuilder(
    theIB->ibEnv = theEnv;
    theIB->ibDefclass = theDefclass;
       
-   if ((theDefclass == NULL) || (theDefclass->slotCount == 0))
+   if ((theDefclass == NULL) || (theDefclass->instanceSlotCount == 0))
      { theIB->ibValueArray = NULL; }
    else
      {
-      theIB->ibValueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * theDefclass->slotCount);
+      theIB->ibValueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * theDefclass->instanceSlotCount);
       
-      for (i = 0; i < theDefclass->slotCount; i++)
+      for (i = 0; i < theDefclass->instanceSlotCount; i++)
         { theIB->ibValueArray[i].voidValue = VoidConstant(theEnv); }
      }
 
@@ -1611,8 +1636,8 @@ PutSlotError IBPutSlot(
      
    if (theIB->ibValueArray == NULL)
      {
-      theIB->ibValueArray = (CLIPSValue *) gm2(theIB->ibEnv,sizeof(CLIPSValue) * theIB->ibDefclass->slotCount);
-      for (i = 0; i < theIB->ibDefclass->slotCount; i++)
+      theIB->ibValueArray = (CLIPSValue *) gm2(theIB->ibEnv,sizeof(CLIPSValue) * theIB->ibDefclass->instanceSlotCount);
+      for (i = 0; i < theIB->ibDefclass->instanceSlotCount; i++)
         { theIB->ibValueArray[i].voidValue = theIB->ibEnv->VoidConstant; }
      }
 
@@ -1720,7 +1745,7 @@ Instance *IBMake(
    SetDelayObjectPatternMatching(theEnv,ov);
 #endif
 
-   for (i = 0; i < theIB->ibDefclass->slotCount; i++)
+   for (i = 0; i < theIB->ibDefclass->instanceSlotCount; i++)
      {
       if (theIB->ibValueArray[i].voidValue != VoidConstant(theEnv))
         {
@@ -1753,7 +1778,7 @@ void IBDispose(
    IBAbort(theIB);
    
    if (theIB->ibValueArray != NULL)
-     { rm(theEnv,theIB->ibValueArray,sizeof(CLIPSValue) * theIB->ibDefclass->slotCount); }
+     { rm(theEnv,theIB->ibValueArray,sizeof(CLIPSValue) * theIB->ibDefclass->instanceSlotCount); }
    
    rtn_struct(theEnv,instanceBuilder,theIB);
   }
@@ -1764,7 +1789,7 @@ void IBDispose(
 void IBAbort(
   InstanceBuilder *theIB)
   {
-   Environment *theEnv = theIB->ibEnv;
+   Environment *theEnv;
    unsigned int i;
    
    if (theIB == NULL) return;
@@ -1773,7 +1798,7 @@ void IBAbort(
    
    theEnv = theIB->ibEnv;
 
-   for (i = 0; i < theIB->ibDefclass->slotCount; i++)
+   for (i = 0; i < theIB->ibDefclass->instanceSlotCount; i++)
      {
       Release(theEnv,theIB->ibValueArray[i].header);
       
@@ -1816,17 +1841,17 @@ InstanceBuilderError IBSetDefclass(
      { theDefclass = NULL; }
 
    if (theIB->ibValueArray != NULL)
-     { rm(theEnv,theIB->ibValueArray,sizeof(CLIPSValue) * theIB->ibDefclass->slotCount); }
+     { rm(theEnv,theIB->ibValueArray,sizeof(CLIPSValue) * theIB->ibDefclass->instanceSlotCount); }
 
    theIB->ibDefclass = theDefclass;
    
-   if ((theDefclass == NULL) || (theDefclass->slotCount == 0))
+   if ((theDefclass == NULL) || (theDefclass->instanceSlotCount == 0))
      { theIB->ibValueArray = NULL; }
    else
      {
-      theIB->ibValueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * theDefclass->slotCount);
+      theIB->ibValueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * theDefclass->instanceSlotCount);
 
-      for (i = 0; i < theDefclass->slotCount; i++)
+      for (i = 0; i < theDefclass->instanceSlotCount; i++)
         { theIB->ibValueArray[i].voidValue = VoidConstant(theEnv); }
      }
 
@@ -1870,20 +1895,22 @@ InstanceModifier *CreateInstanceModifier(
    theIM->imEnv = theEnv;
    theIM->imOldInstance = oldInstance;
 
-   if ((oldInstance == NULL) || (oldInstance->cls->slotCount == 0))
+   if ((oldInstance == NULL) || (oldInstance->cls->instanceSlotCount == 0))
      {
       theIM->imValueArray = NULL;
       theIM->changeMap = NULL;
      }
    else
      {
-      theIM->imValueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * oldInstance->cls->slotCount);
+      unsigned short slotCount = oldInstance->cls->instanceSlotCount;
       
-      for (i = 0; i < oldInstance->cls->slotCount; i++)
+      theIM->imValueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * slotCount);
+      
+      for (i = 0; i < slotCount; i++)
         { theIM->imValueArray[i].voidValue = VoidConstant(theEnv); }
 
-      theIM->changeMap = (char *) gm2(theEnv,CountToBitMapSize(oldInstance->cls->slotCount));
-      ClearBitString((void *) theIM->changeMap,CountToBitMapSize(oldInstance->cls->slotCount));
+      theIM->changeMap = (char *) gm2(theEnv,CountToBitMapSize(slotCount));
+      ClearBitString((void *) theIM->changeMap,CountToBitMapSize(slotCount));
      }
 
    InstanceData(theEnv)->instanceModifierError = IME_NO_ERROR;
@@ -2167,15 +2194,15 @@ PutSlotError IMPutSlot(
 
    if (theIM->imValueArray == NULL)
      {
-      theIM->imValueArray = (CLIPSValue *) gm2(theIM->imEnv,sizeof(CLIPSValue) * theIM->imOldInstance->cls->slotCount);
-      for (i = 0; i < theIM->imOldInstance->cls->slotCount; i++)
+      theIM->imValueArray = (CLIPSValue *) gm2(theIM->imEnv,sizeof(CLIPSValue) * theIM->imOldInstance->cls->instanceSlotCount);
+      for (i = 0; i < theIM->imOldInstance->cls->instanceSlotCount; i++)
         { theIM->imValueArray[i].voidValue = theIM->imEnv->VoidConstant; }
      }
 
    if (theIM->changeMap == NULL)
      {
-      theIM->changeMap = (char *) gm2(theIM->imEnv,CountToBitMapSize(theIM->imOldInstance->cls->slotCount));
-      ClearBitString((void *) theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->slotCount));
+      theIM->changeMap = (char *) gm2(theIM->imEnv,CountToBitMapSize(theIM->imOldInstance->cls->instanceSlotCount));
+      ClearBitString((void *) theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->instanceSlotCount));
      }
      
    /*=====================*/
@@ -2197,7 +2224,8 @@ PutSlotError IMPutSlot(
          return PSE_NO_ERROR;
         }
 
-      if (MultifieldsEqual(oldValue.multifieldValue,slotValue->multifieldValue))
+      if ((oldValue.header->type == MULTIFIELD_TYPE) &&
+          MultifieldsEqual(oldValue.multifieldValue,slotValue->multifieldValue))
         { return PSE_NO_ERROR; }
      }
    else
@@ -2262,7 +2290,7 @@ Instance *IMModify(
    if (theIM->changeMap == NULL)
      { return theIM->imOldInstance; }
      
-   if (! BitStringHasBitsSet(theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->slotCount)))
+   if (! BitStringHasBitsSet(theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->instanceSlotCount)))
      { return theIM->imOldInstance; }
 
 #if DEFRULE_CONSTRUCT
@@ -2301,7 +2329,7 @@ static bool IMModifySlots(
    InstanceSlot *insSlot;
    unsigned int i;
 
-   for (i = 0; i < theInstance->cls->slotCount; i++)
+   for (i = 0; i < theInstance->cls->instanceSlotCount; i++)
      {
       if (overrides[i].value == VoidConstant(theEnv))
         { continue; }
@@ -2340,7 +2368,7 @@ void IMDispose(
    
    if (theIM->imOldInstance != NULL)
      {
-      for (i = 0; i < theIM->imOldInstance->cls->slotCount; i++)
+      for (i = 0; i < theIM->imOldInstance->cls->instanceSlotCount; i++)
         {
          Release(theEnv,theIM->imValueArray[i].header);
 
@@ -2354,10 +2382,10 @@ void IMDispose(
    /*=====================================*/
    
    if (theIM->imValueArray != NULL)
-     { rm(theEnv,theIM->imValueArray,sizeof(CLIPSValue) * theIM->imOldInstance->cls->slotCount); }
+     { rm(theEnv,theIM->imValueArray,sizeof(CLIPSValue) * theIM->imOldInstance->cls->instanceSlotCount); }
       
    if (theIM->changeMap != NULL)
-     { rm(theEnv,(void *) theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->slotCount)); }
+     { rm(theEnv,(void *) theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->instanceSlotCount)); }
 
    /*========================================*/
    /* Return the InstanceModifier structure. */
@@ -2386,7 +2414,7 @@ void IMAbort(
    
    GCBlockStart(theEnv,&gcb);
 
-   for (i = 0; i < theIM->imOldInstance->cls->slotCount; i++)
+   for (i = 0; i < theIM->imOldInstance->cls->instanceSlotCount; i++)
      {
       Release(theEnv,theIM->imValueArray[i].header);
 
@@ -2397,7 +2425,7 @@ void IMAbort(
      }
         
    if (theIM->changeMap != NULL)
-     { ClearBitString((void *) theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->slotCount)); }
+     { ClearBitString((void *) theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->instanceSlotCount)); }
      
    GCBlockEnd(theEnv,&gcb);
   }
@@ -2438,7 +2466,7 @@ InstanceModifierError IMSetInstance(
    
    if (theIM->imValueArray != NULL)
      {
-      for (i = 0; i < theIM->imOldInstance->cls->slotCount; i++)
+      for (i = 0; i < theIM->imOldInstance->cls->instanceSlotCount; i++)
         {
          Release(theEnv,theIM->imValueArray[i].header);
 
@@ -2454,12 +2482,12 @@ InstanceModifierError IMSetInstance(
    if (theIM->imOldInstance == NULL)
      { currentSlotCount = 0; }
    else
-     { currentSlotCount = theIM->imOldInstance->cls->slotCount; }
+     { currentSlotCount = theIM->imOldInstance->cls->instanceSlotCount; }
 
    if (oldInstance == NULL)
      { newSlotCount = 0; }
    else
-     { newSlotCount = oldInstance->cls->slotCount; }
+     { newSlotCount = oldInstance->cls->instanceSlotCount; }
 
    if (newSlotCount != currentSlotCount)
      {
@@ -2469,7 +2497,7 @@ InstanceModifierError IMSetInstance(
       if (theIM->changeMap != NULL)
         { rm(theEnv,(void *) theIM->changeMap,currentSlotCount); }
       
-      if (oldInstance->cls->slotCount == 0)
+      if (oldInstance->cls->instanceSlotCount == 0)
         {
          theIM->imValueArray = NULL;
          theIM->changeMap = NULL;
@@ -2493,11 +2521,11 @@ InstanceModifierError IMSetInstance(
    /* Initialize the value and change arrays. */
    /*=========================================*/
    
-   for (i = 0; i < theIM->imOldInstance->cls->slotCount; i++)
+   for (i = 0; i < theIM->imOldInstance->cls->instanceSlotCount; i++)
      { theIM->imValueArray[i].voidValue = theIM->imEnv->VoidConstant; }
    
    if (newSlotCount != 0)
-     { ClearBitString((void *) theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->slotCount)); }
+     { ClearBitString((void *) theIM->changeMap,CountToBitMapSize(theIM->imOldInstance->cls->instanceSlotCount)); }
 
    /*================================================================*/
    /* Return true to indicate the modifier was successfully created. */

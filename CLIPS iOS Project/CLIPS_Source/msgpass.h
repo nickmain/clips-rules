@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/25/16            */
+   /*             CLIPS Version 6.41  11/28/22            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -50,6 +50,9 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
+/*      6.41  Updated prototypes for FindApplicableOfName    */
+/*            and JoinHandlerLinks to include array sizes.   */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_msgpass
@@ -79,9 +82,9 @@ typedef struct messageHandlerLink
    bool             NextHandlerAvailable(Environment *);
    void             NextHandlerAvailableFunction(Environment *,UDFContext *,UDFValue *);
    void             CallNextHandler(Environment *,UDFContext *,UDFValue *);
-   void             FindApplicableOfName(Environment *,Defclass *,HANDLER_LINK *[],
-                                         HANDLER_LINK *[],CLIPSLexeme *);
-   HANDLER_LINK    *JoinHandlerLinks(Environment *,HANDLER_LINK *[],HANDLER_LINK *[],CLIPSLexeme *);
+   void             FindApplicableOfName(Environment *,Defclass *,HANDLER_LINK *[4],
+                                         HANDLER_LINK *[4],CLIPSLexeme *);
+   HANDLER_LINK    *JoinHandlerLinks(Environment *,HANDLER_LINK *[4],HANDLER_LINK *[4],CLIPSLexeme *);
 
    void             PrintHandlerSlotGetFunction(Environment *,const char *,void *);
    bool             HandlerSlotGetFunction(Environment *,void *,UDFValue *);

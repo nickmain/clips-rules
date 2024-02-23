@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/25/16             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*         CONSTRUCT PROFILING FUNCTIONS MODULE        */
    /*******************************************************/
@@ -46,6 +46,9 @@
 /*            data structures.                               */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -257,7 +260,7 @@ void ProfileInfoCommand(
 
    if (ProfileFunctionData(theEnv)->LastProfileInfo != NO_PROFILE)
      {
-      gensprintf(buffer,"Profile elapsed time = %g seconds\n",
+      gensnprintf(buffer,sizeof(buffer),"Profile elapsed time = %g seconds\n",
                       ProfileFunctionData(theEnv)->ProfileTotalTime);
       WriteString(theEnv,STDOUT,buffer);
 
@@ -407,7 +410,7 @@ static bool OutputProfileInfo(
       itemName = "";
      }
 
-   gensprintf(buffer,ProfileFunctionData(theEnv)->OutputString,
+   gensnprintf(buffer,sizeof(buffer),ProfileFunctionData(theEnv)->OutputString,
                         itemName,
                         (long) profileInfo->numberOfEntries,
 

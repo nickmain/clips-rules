@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  10/30/20             */
+   /*            CLIPS Version 6.41  01/27/23             */
    /*                                                     */
    /*            SYSTEM DEPENDENT HEADER FILE             */
    /*******************************************************/
@@ -98,6 +98,14 @@
 /*                                                           */
 /*      6.41: Added SYSTEM_FUNCTION compiler flag.           */
 /*                                                           */
+/*            Function GenReadBinary returns the number of   */
+/*            bytes read.                                    */
+/*                                                           */
+/*            Added gensnprint function.                     */
+/*                                                           */
+/*            Changed gengetcwd buffer length parameter from */
+/*            int to size_t.                                 */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_sysdep
@@ -118,7 +126,7 @@
    void                        GetSeekSetBinary(Environment *,long);
    void                        GenTellBinary(Environment *,long *);
    void                        GenCloseBinary(Environment *);
-   void                        GenReadBinary(Environment *,void *,size_t);
+   size_t                      GenReadBinary(Environment *,void *,size_t);
    FILE                       *GenOpen(Environment *,const char *,const char *);
    int                         GenClose(Environment *,FILE *);
    int                         GenFlush(Environment *,FILE *);
@@ -130,11 +138,12 @@
    void                        genseed(unsigned int);
    bool                        genremove(Environment *,const char *);
    bool                        genrename(Environment *,const char *,const char *);
-   char                       *gengetcwd(char *,int);
+   char                       *gengetcwd(char *,size_t);
    size_t                      GenWrite(void *,size_t,FILE *);
    int                       (*SetBeforeOpenFunction(Environment *,int (*)(Environment *)))(Environment *);
    int                       (*SetAfterOpenFunction(Environment *,int (*)(Environment *)))(Environment *);
    int                         gensprintf(char *,const char *,...);
+   int                         gensnprintf(char *,size_t,const char *,...);
    char                       *genstrcpy(char *,const char *);
    char                       *genstrncpy(char *,const char *,size_t);
    char                       *genstrcat(char *,const char *);

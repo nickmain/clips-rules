@@ -90,6 +90,9 @@ int ReadInterfaceCallback(
    int theChar;
    CLIPSTerminalController *theObject = (__bridge CLIPSTerminalController *) context;
 
+   dispatch_sync(dispatch_get_main_queue(),
+      ^{ [[theObject environment] checkForChanges]; });
+   
    if ([theObject ungetCount] > 0)
      { return (int) [theObject popUngetChar]; }
      

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/25/16            */
+   /*             CLIPS Version 6.41  01/09/23            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -41,6 +41,9 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
+/*      6.41: Changed the name of fact query structures to   */
+/*            be distinct from instance structures.          */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_factqury
@@ -53,40 +56,40 @@
 
 #include "factmngr.h"
 
-typedef struct query_template
+typedef struct fact_query_template
   {
    Deftemplate *templatePtr;
-   struct query_template *chain, *nxt;
-  } QUERY_TEMPLATE;
+   struct fact_query_template *chain, *nxt;
+  } FACT_QUERY_TEMPLATE;
 
-typedef struct query_soln
+typedef struct fact_query_soln
   {
    Fact **soln;
-   struct query_soln *nxt;
-  } QUERY_SOLN;
+   struct fact_query_soln *nxt;
+  } FACT_QUERY_SOLN;
 
-typedef struct query_core
+typedef struct fact_query_core
   {
    Fact **solns;
    Expression *query,*action;
-   QUERY_SOLN *soln_set,*soln_bottom;
+   FACT_QUERY_SOLN *soln_set,*soln_bottom;
    unsigned soln_size,soln_cnt;
    UDFValue *result;
-  } QUERY_CORE;
+  } FACT_QUERY_CORE;
 
-typedef struct query_stack
+typedef struct fact_query_stack
   {
-   QUERY_CORE *core;
-   struct query_stack *nxt;
-  } QUERY_STACK;
+   FACT_QUERY_CORE *core;
+   struct fact_query_stack *nxt;
+  } FACT_QUERY_STACK;
 
 #define FACT_QUERY_DATA 63
 
 struct factQueryData
   {
    CLIPSLexeme *QUERY_DELIMITER_SYMBOL;
-   QUERY_CORE *QueryCore;
-   QUERY_STACK *QueryCoreStack;
+   FACT_QUERY_CORE *QueryCore;
+   FACT_QUERY_STACK *QueryCoreStack;
    bool AbortQuery;
   };
 

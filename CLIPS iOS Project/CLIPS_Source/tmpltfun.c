@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  10/03/19             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -92,6 +92,12 @@
 /*            For the modify command, specifying the fact    */
 /*            using a fact-index is no longer limited to     */
 /*            top-level commands.                            */
+/*                                                           */
+/*      6.41: Added error message for using ordered facts    */
+/*            with functions expecting deftemplate facts.    */
+/*                                                           */
+/*            Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -264,7 +270,7 @@ void ModifyCommand(
       if (oldFact == NULL)
         {
          char tempBuffer[20];
-         gensprintf(tempBuffer,"f-%lld",factNum);
+         gensnprintf(tempBuffer,sizeof(tempBuffer),"f-%lld",factNum);
          CantFindItemErrorMessage(theEnv,"fact",tempBuffer,false);
          return;
         }
@@ -305,7 +311,12 @@ void ModifyCommand(
 
    templatePtr = oldFact->whichDeftemplate;
 
-   if (templatePtr->implied) return;
+   if (templatePtr->implied)
+     {
+      OrderedFactFunctionError(theEnv,"modify");
+      SetEvaluationError(theEnv,true);
+      return;
+     }
 
    /*========================================================*/
    /* Create a data object array to hold the updated values. */
@@ -665,7 +676,7 @@ void DuplicateCommand(
       if (oldFact == NULL)
         {
          char tempBuffer[20];
-         gensprintf(tempBuffer,"f-%lld",factNum);
+         gensnprintf(tempBuffer,sizeof(tempBuffer),"f-%lld",factNum);
          CantFindItemErrorMessage(theEnv,"fact",tempBuffer,false);
          return;
         }
@@ -706,7 +717,12 @@ void DuplicateCommand(
 
    templatePtr = oldFact->whichDeftemplate;
 
-   if (templatePtr->implied) return;
+   if (templatePtr->implied)
+     {
+      OrderedFactFunctionError(theEnv,"duplicate");
+      SetEvaluationError(theEnv,true);
+      return;
+     }
 
    /*================================================================*/
    /* Duplicate the values from the old fact (skipping multifields). */

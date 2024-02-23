@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  02/03/21            */
+   /*             CLIPS Version 6.41  12/02/22            */
    /*                                                     */
    /*                 FILE UTILITY MODULE                 */
    /*******************************************************/
@@ -31,6 +31,9 @@
 /*                                                           */
 /*            Fix for the batch* command so that the last    */
 /*            command will execute if there is not a crlf.   */
+/*                                                           */
+/*      6.41: Fixed compiler warning when compiling with     */
+/*            RUN_TIME set to 1.                             */
 /*                                                           */
 /*************************************************************/
 
@@ -746,8 +749,10 @@ bool RemoveBatch(
   Environment *theEnv)
   {
    struct batchEntry *bptr;
-   bool rv, fileBatch = false;
-
+   bool rv;
+#if (! RUN_TIME) && (! BLOAD_ONLY)
+   bool fileBatch = false;
+#endif
    if (FileCommandData(theEnv)->TopOfBatchList == NULL) return false;
 
    /*==================================================*/
@@ -756,9 +761,9 @@ bool RemoveBatch(
 
    if (FileCommandData(theEnv)->TopOfBatchList->batchType == FILE_BATCH)
      {
-      fileBatch = true;
       GenClose(theEnv,FileCommandData(theEnv)->TopOfBatchList->fileSource);
 #if (! RUN_TIME) && (! BLOAD_ONLY)
+      fileBatch = true;
       FlushParsingMessages(theEnv);
       DeleteErrorCaptureRouter(theEnv);
 #endif

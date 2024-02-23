@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/27/19             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*            STRING_TYPE FUNCTIONS MODULE             */
    /*******************************************************/
@@ -77,6 +77,9 @@
 /*            error if extraneous input is encountered.      */
 /*                                                           */
 /*            Added str-replace function.                    */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -852,7 +855,7 @@ EvalError Eval(
    /*======================================================*/
 
    depth++;
-   gensprintf(logicalNameBuffer,"Eval-%d",depth);
+   gensnprintf(logicalNameBuffer,sizeof(logicalNameBuffer),"Eval-%d",depth);
    if (OpenStringSource(theEnv,logicalNameBuffer,theString,0) == 0)
      {
       SystemError(theEnv,"STRNGFUN",1);

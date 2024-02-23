@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  02/19/20             */
+   /*            CLIPS Version 6.41  11/11/22             */
    /*                                                     */
    /*          DEFTEMPLATE RHS PARSING HEADER FILE        */
    /*******************************************************/
@@ -34,6 +34,9 @@
 /*            data structures.                               */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*      6.41: Fixed error message where a space was missing  */
+/*            between tokens.                                */
 /*                                                           */
 /*************************************************************/
 
@@ -395,6 +398,10 @@ static struct expr *ParseAssertSlotValues(
 
    if (tempToken->tknType != RIGHT_PARENTHESIS_TOKEN)
      {
+      PPBackup(theEnv);
+      SavePPBuffer(theEnv," ");
+      SavePPBuffer(theEnv,tempToken->printForm);
+
       SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
       *error = true;
       ReturnExpression(theEnv,newField);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/09/18             */
+   /*            CLIPS Version 6.41  11/04/22             */
    /*                                                     */
    /*             MULTIFIELD FUNCTIONS MODULE             */
    /*******************************************************/
@@ -45,6 +45,9 @@
 /*            Fixed linkage issue when DEFMODULE_CONSTRUCT   */
 /*            compiler flag is set to 0.                     */
 /*                                                           */
+/*      6.32: Rebinding of field index variable in progn$    */
+/*            and foreach now generates an error.            */
+/*                                                           */
 /*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
@@ -73,6 +76,9 @@
 /*            now converts non-primitive value tokens        */
 /*            (such as parentheses) to symbols rather than   */
 /*            strings.                                       */
+/*                                                           */
+/*      6.41: Added intersection$, union$, and difference$   */
+/*            functions.                                     */
 /*                                                           */
 /*************************************************************/
 
@@ -168,6 +174,9 @@ void MultifieldFunctionDefinitions(
    AddUDF(theEnv,"nth$","synldife",2,2,";l;m",NthFunction,"NthFunction",NULL);
    AddUDF(theEnv,"member$","blm",2,2,";*;m",MemberFunction,"MemberFunction",NULL);
    AddUDF(theEnv,"subsetp","b",2,2,";m;m",SubsetpFunction,"SubsetpFunction",NULL);
+   AddUDF(theEnv,"intersection$","m",0,UNBOUNDED,"m",IntersectionFunction,"IntersectionFunction",NULL);
+   AddUDF(theEnv,"union$","m",0,UNBOUNDED,"m",UnionFunction,"UnionFunction",NULL);
+   AddUDF(theEnv,"difference$","m",1,UNBOUNDED,"m",DifferenceFunction,"DifferenceFunction",NULL);
    AddUDF(theEnv,"progn$","*",0,UNBOUNDED,NULL,MultifieldPrognFunction,"MultifieldPrognFunction",NULL);
    AddUDF(theEnv,"foreach","*",0,UNBOUNDED,NULL,ForeachFunction,"ForeachFunction",NULL);
    FuncSeqOvlFlags(theEnv,"progn$",false,false);
@@ -956,6 +965,454 @@ void MemberFunction(
      }
   }
 
+/********************************************/
+/* IntersectionFunction: H/L access routine */
+/*   for the intersection$ function.        */
+/********************************************/
+/*
+void IntersectionFunction2(
+  Environment *theEnv,
+  UDFContext *context,
+  UDFValue *returnValue)
+  {
+   CLIPSValue *valueArray;
+   UDFValue item1, item2;
+   size_t i, j, maxElements, actualElements = 0;
+   bool found;
+   
+   // TBD Use HashMap to determine intersection
+   
+   if (! UDFFirstArgument(context,MULTIFIELD_BIT,&item1))
+     { return; }
+
+   if (! UDFNextArgument(context,MULTIFIELD_BIT,&item2))
+     { return; }
+
+   if ((item1.range == 0) ||
+       (item2.range == 0))
+     {
+      SetMultifieldErrorValue(theEnv,returnValue);
+      return;
+     }
+
+   if (item1.range >= item2.range)
+     { maxElements = item1.range; }
+   else
+     { maxElements = item2.range; }
+     
+   valueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * maxElements);
+
+   for (i = item1.begin; i < (item1.begin + item1.range); i++)
+     {
+      found = false;
+      
+      for (j = item2.begin; j < (item2.begin + item2.range); j++)
+        {
+         if (item1.multifieldValue->contents[i].value == item2.multifieldValue->contents[j].value)
+           {
+            found = true;
+            break;
+           }
+        }
+        
+      if (! found) continue;
+
+      found = false;
+
+      for (j = 0; j < actualElements; j++)
+        {
+         if (item1.multifieldValue->contents[i].value == valueArray[j].value)
+           {
+            found = true;
+            break;
+           }
+        }
+
+      if (! found)
+        {
+         valueArray[actualElements].value = item1.multifieldValue->contents[i].value;
+         actualElements++;
+        }
+        
+      if (actualElements == maxElements) break;
+     }
+     
+   returnValue->begin = 0;
+   returnValue->range = actualElements;
+   returnValue->multifieldValue = CreateMultifield(theEnv,actualElements);
+
+   for (i = 0; i < actualElements; i++)
+     { returnValue->multifieldValue->contents[i].value = valueArray[i].value; }
+
+   rm(theEnv,valueArray,sizeof(CLIPSValue) * maxElements);
+  }
+  */
+/********************************************/
+/* IntersectionFunction: H/L access routine */
+/*   for the intersection$ function.        */
+/********************************************/
+void IntersectionFunction(
+  Environment *theEnv,
+  UDFContext *context,
+  UDFValue *returnValue)
+  {
+   unsigned int numArgs, argIndex;
+   UDFValue *theArgs;
+   size_t i, j, maxElements = 0, actualElements = 0;
+   CLIPSValue *valueArray;
+   bool found;
+   
+   /*====================================*/
+   /* Determine the number of arguments. */
+   /*====================================*/
+
+   numArgs = UDFArgumentCount(context);
+   
+   /*==============================================*/
+   /* If no arguments, return an empty multifield. */
+   /*==============================================*/
+   
+   if (numArgs == 0)
+     {
+      SetMultifieldErrorValue(theEnv,returnValue);
+      return;
+     }
+     
+   /*===========================================*/
+   /* Evaluate all of the multifield arguments. */
+   /*===========================================*/
+   
+   theArgs = (UDFValue *) gm1(theEnv,sizeof(UDFValue) * numArgs);
+   for (argIndex = 0; argIndex < numArgs; argIndex++)
+     {
+      if (! UDFNthArgument(context,argIndex+1,MULTIFIELD_BIT,&theArgs[argIndex]))
+        {
+         rm(theEnv,theArgs,sizeof(UDFValue) * numArgs);
+         SetMultifieldErrorValue(theEnv,returnValue);
+         return;
+        }
+     }
+   
+   /*=================================*/
+   /* Determine the maximum number of */
+   /* elements in the intersection.   */
+   /*=================================*/
+   
+   maxElements = theArgs[0].range;
+   for (argIndex = 0; argIndex < numArgs; argIndex++)
+     {
+      if (theArgs[argIndex].range < maxElements)
+        { maxElements = theArgs[argIndex].range; }
+     }
+
+   /*=========================================*/
+   /* If any argument is an empty multifield, */
+   /* return an empty multifield.             */
+   /*=========================================*/
+   
+   if (maxElements == 0)
+     {
+      rm(theEnv,theArgs,sizeof(UDFValue) * numArgs);
+      SetMultifieldErrorValue(theEnv,returnValue);
+      return;
+     }
+     
+   /*===========================================================*/
+   /* Allocate an array large enough to hold all of the values. */
+   /*===========================================================*/
+   
+   valueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * maxElements);
+
+   /*=====================================*/
+   /* Copy values to the temporary array. */
+   /*=====================================*/
+
+   for (i = theArgs[0].begin; i < (theArgs[0].begin + theArgs[0].range); i++)
+     {
+      found = true;
+      
+      for (argIndex = 1; argIndex < numArgs; argIndex++)
+        {
+         found = false;
+         for (j = theArgs[argIndex].begin; j < (theArgs[argIndex].begin + theArgs[argIndex].range); j++)
+           {
+            if (theArgs[0].multifieldValue->contents[i].value == theArgs[argIndex].multifieldValue->contents[j].value)
+              {
+               found = true;
+               break;
+              }
+           }
+           
+         if (! found) break;
+        }
+      
+      if (! found) continue;
+      
+      found = false;
+
+      for (j = 0; j < actualElements; j++)
+        {
+         if (theArgs[0].multifieldValue->contents[i].value == valueArray[j].value)
+           {
+            found = true;
+            break;
+           }
+        }
+
+      if (! found)
+        {
+         valueArray[actualElements].value = theArgs[0].multifieldValue->contents[i].value;
+         actualElements++;
+        }
+     }
+
+   /*================================*/
+   /* Create the final return value. */
+   /*================================*/
+   
+   returnValue->begin = 0;
+   returnValue->range = actualElements;
+   returnValue->multifieldValue = CreateMultifield(theEnv,actualElements);
+
+   for (i = 0; i < actualElements; i++)
+     { returnValue->multifieldValue->contents[i].value = valueArray[i].value; }
+
+   /*==================================*/
+   /* Deallocate the temporary arrays. */
+   /*==================================*/
+   
+   rm(theEnv,valueArray,sizeof(CLIPSValue) * maxElements);
+   rm(theEnv,theArgs,sizeof(UDFValue) * numArgs);
+  }
+
+/*************************************/
+/* UnionFunction: H/L access routine */
+/*   for the union$ function.        */
+/*************************************/
+void UnionFunction(
+  Environment *theEnv,
+  UDFContext *context,
+  UDFValue *returnValue)
+  {
+   unsigned int numArgs, argIndex;
+   UDFValue *theArgs;
+   size_t i, j, maxElements = 0, actualElements = 0;
+   CLIPSValue *valueArray;
+   bool found;
+   
+   /*====================================*/
+   /* Determine the number of arguments. */
+   /*====================================*/
+
+   numArgs = UDFArgumentCount(context);
+   
+   /*==============================================*/
+   /* If no arguments, return an empty multifield. */
+   /*==============================================*/
+   
+   if (numArgs == 0)
+     {
+      SetMultifieldErrorValue(theEnv,returnValue);
+      return;
+     }
+
+   /*===========================================*/
+   /* Evaluate all of the multifield arguments. */
+   /*===========================================*/
+   
+   theArgs = (UDFValue *) gm1(theEnv,sizeof(UDFValue) * numArgs);
+   for (argIndex = 0; argIndex < numArgs; argIndex++)
+     {
+      if (! UDFNthArgument(context,argIndex+1,MULTIFIELD_BIT,&theArgs[argIndex]))
+        {
+         rm(theEnv,theArgs,sizeof(UDFValue) * numArgs);
+         SetMultifieldErrorValue(theEnv,returnValue);
+         return;
+        }
+        
+      maxElements += theArgs[argIndex].range;
+     }
+
+   /*=========================================*/
+   /* If all the multifield values contain no */
+   /* elements, return an empty multifield.   */
+   /*=========================================*/
+   
+   if (maxElements == 0)
+     {
+      rm(theEnv,theArgs,sizeof(UDFValue) * numArgs);
+      SetMultifieldErrorValue(theEnv,returnValue);
+      return;
+     }
+     
+   /*===========================================================*/
+   /* Allocate an array large enough to hold all of the values. */
+   /*===========================================================*/
+   
+   valueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * maxElements);
+
+   /*=====================================*/
+   /* Copy values to the temporary array. */
+   /*=====================================*/
+   
+   for (argIndex = 0; argIndex < numArgs; argIndex++)
+     {
+      for (i = theArgs[argIndex].begin; i < (theArgs[argIndex].begin + theArgs[argIndex].range); i++)
+        {
+         found = false;
+         
+         for (j = 0; j < actualElements; j++)
+           {
+            if (theArgs[argIndex].multifieldValue->contents[i].value == valueArray[j].value)
+              {
+               found = true;
+               break;
+              }
+           }
+           
+         if (! found)
+           {
+            valueArray[actualElements].value = theArgs[argIndex].multifieldValue->contents[i].value;
+            actualElements++;
+           }
+        }
+     }
+
+   /*================================*/
+   /* Create the final return value. */
+   /*================================*/
+   
+   returnValue->begin = 0;
+   returnValue->range = actualElements;
+   returnValue->multifieldValue = CreateMultifield(theEnv,actualElements);
+
+   for (i = 0; i < actualElements; i++)
+     { returnValue->multifieldValue->contents[i].value = valueArray[i].value; }
+
+   /*==================================*/
+   /* Deallocate the temporary arrays. */
+   /*==================================*/
+   
+   rm(theEnv,valueArray,sizeof(CLIPSValue) * maxElements);
+   rm(theEnv,theArgs,sizeof(UDFValue) * numArgs);
+  }
+
+/******************************************/
+/* DifferenceFunction: H/L access routine */
+/*   for the difference$ function.        */
+/******************************************/
+void DifferenceFunction(
+  Environment *theEnv,
+  UDFContext *context,
+  UDFValue *returnValue)
+  {
+   unsigned int numArgs, argIndex;
+   UDFValue *theArgs;
+   size_t i, j, maxElements = 0, actualElements = 0;
+   CLIPSValue *valueArray;
+   bool found;
+   
+   /*====================================*/
+   /* Determine the number of arguments. */
+   /*====================================*/
+
+   numArgs = UDFArgumentCount(context);
+   
+   /*===========================================*/
+   /* Evaluate all of the multifield arguments. */
+   /*===========================================*/
+   
+   theArgs = (UDFValue *) gm1(theEnv,sizeof(UDFValue) * numArgs);
+   for (argIndex = 0; argIndex < numArgs; argIndex++)
+     {
+      if (! UDFNthArgument(context,argIndex+1,MULTIFIELD_BIT,&theArgs[argIndex]))
+        {
+         rm(theEnv,theArgs,sizeof(UDFValue) * numArgs);
+         SetMultifieldErrorValue(theEnv,returnValue);
+         return;
+        }
+     }
+   
+   maxElements = theArgs[0].range;
+
+   /*=========================================*/
+   /* If the first multifield values contains  */
+   /* no elements, return an empty multifield. */
+   /*=========================================*/
+   
+   if (maxElements == 0)
+     {
+      rm(theEnv,theArgs,sizeof(UDFValue) * numArgs);
+      SetMultifieldErrorValue(theEnv,returnValue);
+      return;
+     }
+     
+   /*===========================================================*/
+   /* Allocate an array large enough to hold all of the values. */
+   /*===========================================================*/
+   
+   valueArray = (CLIPSValue *) gm2(theEnv,sizeof(CLIPSValue) * maxElements);
+
+   /*=====================================*/
+   /* Copy values to the temporary array. */
+   /*=====================================*/
+
+   for (i = theArgs[0].begin; i < (theArgs[0].begin + theArgs[0].range); i++)
+     {
+      found = false;
+      for (argIndex = 1; argIndex < numArgs; argIndex++)
+        {
+         for (j = theArgs[argIndex].begin; j < (theArgs[argIndex].begin + theArgs[argIndex].range); j++)
+           {
+            if (theArgs[0].multifieldValue->contents[i].value == theArgs[argIndex].multifieldValue->contents[j].value)
+              {
+               found = true;
+               break;
+              }
+           }
+           
+         if (found) break;
+        }
+      
+      if (found) continue;
+      
+      found = false;
+
+      for (j = 0; j < actualElements; j++)
+        {
+         if (theArgs[0].multifieldValue->contents[i].value == valueArray[j].value)
+           {
+            found = true;
+            break;
+           }
+        }
+
+      if (! found)
+        {
+         valueArray[actualElements].value = theArgs[0].multifieldValue->contents[i].value;
+         actualElements++;
+        }
+     }
+
+   /*================================*/
+   /* Create the final return value. */
+   /*================================*/
+   
+   returnValue->begin = 0;
+   returnValue->range = actualElements;
+   returnValue->multifieldValue = CreateMultifield(theEnv,actualElements);
+
+   for (i = 0; i < actualElements; i++)
+     { returnValue->multifieldValue->contents[i].value = valueArray[i].value; }
+
+   /*==================================*/
+   /* Deallocate the temporary arrays. */
+   /*==================================*/
+   
+   rm(theEnv,valueArray,sizeof(CLIPSValue) * maxElements);
+   rm(theEnv,theArgs,sizeof(UDFValue) * numArgs);
+  }
+
 /**************************/
 /* FindValueInMultifield: */
 /**************************/
@@ -1099,7 +1556,8 @@ static struct expr *MultifieldPrognParser(
    struct token tkn;
    struct expr *tmp;
    CLIPSLexeme *fieldVar = NULL;
-
+   size_t flen = 0;
+   
    SavePPBuffer(theEnv," ");
    GetToken(theEnv,infile,&tkn);
 
@@ -1180,10 +1638,15 @@ static struct expr *MultifieldPrognParser(
    ReturnExpression(theEnv,tmp);
    newBindList = GetParsedBindNames(theEnv);
    prev = NULL;
+   if (fieldVar != NULL)
+     { flen = strlen(fieldVar->contents); }
+
    while (newBindList != NULL)
      {
       if ((fieldVar == NULL) ? false :
-          (strcmp(newBindList->name->contents,fieldVar->contents) == 0))
+          (((strncmp(newBindList->name->contents,fieldVar->contents,flen) == 0) &&
+            (strcmp(newBindList->name->contents+flen,"-index") == 0)) ||
+           (strcmp(newBindList->name->contents,fieldVar->contents) == 0)))
         {
          ClearParsedBindNames(theEnv);
          SetParsedBindNames(theEnv,oldBindList);
@@ -1221,6 +1684,7 @@ static struct expr *ForeachParser(
    struct token tkn;
    struct expr *tmp;
    CLIPSLexeme *fieldVar;
+   size_t flen = 0;
 
    SavePPBuffer(theEnv," ");
    GetToken(theEnv,infile,&tkn);
@@ -1264,10 +1728,15 @@ static struct expr *ForeachParser(
    ReturnExpression(theEnv,tmp);
    newBindList = GetParsedBindNames(theEnv);
    prev = NULL;
-   while (newBindList != NULL)
+   if (fieldVar != NULL)
+     { flen = strlen(fieldVar->contents); }
+
+  while (newBindList != NULL)
      {
       if ((fieldVar == NULL) ? false :
-          (strcmp(newBindList->name->contents,fieldVar->contents) == 0))
+          (((strncmp(newBindList->name->contents,fieldVar->contents,flen) == 0) &&
+            (strcmp(newBindList->name->contents+flen,"-index") == 0)) ||
+           (strcmp(newBindList->name->contents,fieldVar->contents) == 0)))
         {
          ClearParsedBindNames(theEnv);
          SetParsedBindNames(theEnv,oldBindList);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/29/18             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                PRINT UTILITY MODULE                 */
    /*******************************************************/
@@ -67,6 +67,9 @@
 /*            File name/line count displayed for errors      */
 /*            and warnings during load command.              */
 /*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -127,7 +130,7 @@ void WriteInteger(
   {
    char printBuffer[32];
 
-   gensprintf(printBuffer,"%lld",number);
+   gensnprintf(printBuffer,sizeof(printBuffer),"%lld",number);
    WriteString(theEnv,logicalName,printBuffer);
   }
 
@@ -142,7 +145,7 @@ void PrintUnsignedInteger(
   {
    char printBuffer[32];
 
-   gensprintf(printBuffer,"%llu",number);
+   gensnprintf(printBuffer,sizeof(printBuffer),"%llu",number);
    WriteString(theEnv,logicalName,printBuffer);
   }
 
@@ -192,10 +195,10 @@ void PrintAtom(
           {
            WriteString(theEnv,logicalName,"<Pointer-");
 
-           gensprintf(buffer,"%d-",theAddress->type);
+           gensnprintf(buffer,sizeof(buffer),"%d-",theAddress->type);
            WriteString(theEnv,logicalName,buffer);
 
-           gensprintf(buffer,"%p",((CLIPSExternalAddress *) value)->contents);
+           gensnprintf(buffer,sizeof(buffer),"%p",((CLIPSExternalAddress *) value)->contents);
            WriteString(theEnv,logicalName,buffer);
            WriteString(theEnv,logicalName,">");
           }
@@ -532,7 +535,7 @@ const char *FloatToString(
    char x;
    CLIPSLexeme *thePtr;
 
-   gensprintf(floatString,"%.15g",number);
+   gensnprintf(floatString,sizeof(floatString),"%.15g",number);
 
    for (i = 0; (x = floatString[i]) != '\0'; i++)
      {
@@ -559,7 +562,7 @@ const char *LongIntegerToString(
    char buffer[50];
    CLIPSLexeme *thePtr;
 
-   gensprintf(buffer,"%lld",number);
+   gensnprintf(buffer,sizeof(buffer),"%lld",number);
 
    thePtr = CreateString(theEnv,buffer);
    return thePtr->contents;
@@ -649,10 +652,10 @@ const char *DataObjectToString(
           {
            WriteString(theEnv,"DOTS","<Pointer-");
 
-           gensprintf(buffer,"%d-",theAddress->type);
+           gensnprintf(buffer,sizeof(buffer),"%d-",theAddress->type);
            WriteString(theEnv,"DOTS",buffer);
 
-           gensprintf(buffer,"%p",theAddress->contents);
+           gensnprintf(buffer,sizeof(buffer),"%p",theAddress->contents);
            WriteString(theEnv,"DOTS",buffer);
            WriteString(theEnv,"DOTS",">");
           }
@@ -668,7 +671,7 @@ const char *DataObjectToString(
          if (theDO->factValue == &FactData(theEnv)->DummyFact)
            { return("<Dummy Fact>"); }
 
-         gensprintf(buffer,"<Fact-%lld>",theDO->factValue->factIndex);
+         gensnprintf(buffer,sizeof(buffer),"<Fact-%lld>",theDO->factValue->factIndex);
          thePtr = CreateString(theEnv,buffer);
          return thePtr->contents;
 #endif
@@ -751,7 +754,7 @@ void FactRetractedErrorMessage(
    
    PrintErrorID(theEnv,"PRNTUTIL",11,false);
    WriteString(theEnv,STDERR,"The fact ");
-   gensprintf(tempBuffer,"f-%lld",theFact->factIndex);
+   gensnprintf(tempBuffer,sizeof(tempBuffer),"f-%lld",theFact->factIndex);
    WriteString(theEnv,STDERR,tempBuffer);
    WriteString(theEnv,STDERR," has been retracted.\n");
   }
@@ -773,7 +776,7 @@ void FactVarSlotErrorMessage1(
    WriteString(theEnv,STDERR,"The variable/slot reference ?");
    WriteString(theEnv,STDERR,varSlot);
    WriteString(theEnv,STDERR," cannot be resolved because the referenced fact ");
-   gensprintf(tempBuffer,"f-%lld",theFact->factIndex);
+   gensnprintf(tempBuffer,sizeof(tempBuffer),"f-%lld",theFact->factIndex);
    WriteString(theEnv,STDERR,tempBuffer);
    WriteString(theEnv,STDERR," has been retracted.\n");
   }
@@ -795,7 +798,7 @@ void FactVarSlotErrorMessage2(
    WriteString(theEnv,STDERR,"The variable/slot reference ?");
    WriteString(theEnv,STDERR,varSlot);
    WriteString(theEnv,STDERR," is invalid because the referenced fact ");
-   gensprintf(tempBuffer,"f-%lld",theFact->factIndex);
+   gensnprintf(tempBuffer,sizeof(tempBuffer),"f-%lld",theFact->factIndex);
    WriteString(theEnv,STDERR,tempBuffer);
    WriteString(theEnv,STDERR," does not contain the specified slot.\n");
   }

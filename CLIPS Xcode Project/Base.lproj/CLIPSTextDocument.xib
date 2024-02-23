@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -19,7 +19,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="135" y="421" width="531" height="418"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="531" height="418"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -56,7 +56,7 @@
                         </scroller>
                     </scrollView>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="132">
-                        <rect key="frame" x="8" y="376" width="44" height="35"/>
+                        <rect key="frame" x="8" y="392" width="44" height="19"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="CogUp" imagePosition="above" alignment="center" alternateImage="CogDown" id="154">
                             <behavior key="behavior" lightByContents="YES"/>
                             <font key="font" metaFont="system" size="10"/>
@@ -65,9 +65,13 @@
                             <action selector="performClick:" target="133" id="138"/>
                         </connections>
                     </button>
-                    <popUpButton hidden="YES" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="133" userLabel="Popup Menu">
-                        <rect key="frame" x="6" y="390" width="31" height="22"/>
-                        <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="155" userLabel="PopupButtonCell">
+                    <popUpButton hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="133" userLabel="Popup Menu">
+                        <rect key="frame" x="5" y="391" width="108" height="22"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="57f-jV-Rrd"/>
+                            <constraint firstAttribute="height" constant="16" id="xzh-37-gID"/>
+                        </constraints>
+                        <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" imagePosition="only" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="155" userLabel="PopupButtonCell">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                             <menu key="menu" title="OtherViews" id="134">
@@ -113,12 +117,14 @@
                 <constraints>
                     <constraint firstItem="21" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="-1" id="3PW-se-kmg"/>
                     <constraint firstItem="133" firstAttribute="top" secondItem="6" secondAttribute="top" constant="7" id="5pF-Ww-6ea"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="133" secondAttribute="trailing" constant="20" symbolic="YES" id="8lC-Pe-1uj"/>
                     <constraint firstAttribute="bottom" secondItem="21" secondAttribute="bottom" constant="-1" id="Hwy-pc-xEd"/>
                     <constraint firstItem="21" firstAttribute="top" secondItem="6" secondAttribute="top" constant="32" id="IJu-dH-AAn"/>
                     <constraint firstAttribute="trailing" secondItem="21" secondAttribute="trailing" constant="-1" id="WQf-ti-kjp"/>
                     <constraint firstItem="132" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="8" id="cfE-tI-Ndm"/>
                     <constraint firstItem="132" firstAttribute="top" secondItem="6" secondAttribute="top" constant="7" id="eoH-7a-hZw"/>
                     <constraint firstItem="133" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="9" id="oPN-1G-vAb"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="132" secondAttribute="trailing" constant="20" symbolic="YES" id="ygK-IB-YFP"/>
                 </constraints>
             </view>
             <connections>

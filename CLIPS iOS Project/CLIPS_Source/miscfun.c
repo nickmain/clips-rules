@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.41  05/10/21             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -108,6 +108,9 @@
 /*            Removed WINDOW_INTERFACE flag.                 */
 /*                                                           */
 /*      6.41: Added SYSTEM_FUNCTION compiler flag.           */
+/*                                                           */
+/*            Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -311,7 +314,7 @@ void GensymFunction(
    /* as the postfix.                                */
    /*================================================*/
 
-   gensprintf(genstring,"gen%lld",MiscFunctionData(theEnv)->GensymNumber);
+   gensnprintf(genstring,sizeof(genstring),"gen%lld",MiscFunctionData(theEnv)->GensymNumber);
    MiscFunctionData(theEnv)->GensymNumber++;
 
    /*====================*/
@@ -356,7 +359,7 @@ void GensymStar(
 
    do
      {
-      gensprintf(genstring,"gen%lld",MiscFunctionData(theEnv)->GensymNumber);
+      gensnprintf(genstring,sizeof(genstring),"gen%lld",MiscFunctionData(theEnv)->GensymNumber);
       MiscFunctionData(theEnv)->GensymNumber++;
      }
    while (FindSymbolHN(theEnv,genstring,SYMBOL_BIT) != NULL);

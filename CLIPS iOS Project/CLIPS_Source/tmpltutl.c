@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  11/01/16             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*            DEFTEMPLATE UTILITIES MODULE             */
    /*******************************************************/
@@ -54,6 +54,12 @@
 /*                                                           */
 /*            Watch facts for modify command only prints     */
 /*            changed slots.                                 */
+/*                                                           */
+/*      6.41: Added error message for using ordered facts    */
+/*            with functions expecting deftemplate facts.    */
+/*                                                           */
+/*            Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -158,6 +164,21 @@ void MultiIntoSingleFieldSlotError(
    SetEvaluationError(theEnv,true);
   }
 
+/***************************************************/
+/* OrderedFactFunctionError: Generic error message */
+/*   used when an ordered fact is used with a      */
+/*   function expecting a deftemplate fact.        */
+/***************************************************/
+void OrderedFactFunctionError(
+  Environment *theEnv,
+  const char *functionName)
+  {
+   PrintErrorID(theEnv,"TMPLTFUN",2,true);
+   WriteString(theEnv,STDERR,"Ordered facts cannot be used with the '");
+   WriteString(theEnv,STDERR,functionName);
+   WriteString(theEnv,STDERR,"' function.\n");
+  }
+  
 /**************************************************************/
 /* CheckTemplateFact: Checks a fact to see if it violates any */
 /*   deftemplate type, allowed-..., or range specifications.  */
@@ -223,7 +244,7 @@ void CheckTemplateFact(
       rv = ConstraintCheckDataObject(theEnv,&theData,slotPtr->constraints);
       if (rv != NO_VIOLATION)
         {
-         gensprintf(thePlace,"fact f-%lld",theFact->factIndex);
+         gensnprintf(thePlace,sizeof(thePlace),"fact f-%lld",theFact->factIndex);
 
          PrintErrorID(theEnv,"CSTRNCHK",1,true);
          WriteString(theEnv,STDERR,"Slot value ");

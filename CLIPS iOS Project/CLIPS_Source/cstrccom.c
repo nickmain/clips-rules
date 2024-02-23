@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/11/21             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*              CONSTRUCT COMMANDS MODULE              */
    /*******************************************************/
@@ -63,6 +63,9 @@
 /*                                                           */
 /*            Pretty print functions accept optional logical */
 /*            name argument.                                 */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -335,7 +338,7 @@ void UndefconstructCommand(
    /* Get the name of the construct to be deleted. */
    /*==============================================*/
 
-   gensprintf(buffer,"%s name",constructClass->constructName);
+   gensnprintf(buffer,sizeof(buffer),"%s name",constructClass->constructName);
 
    constructName = GetConstructName(context,command,buffer);
    if (constructName == NULL) return;
@@ -396,7 +399,7 @@ void PPConstructCommand(
    /* to be "pretty printed."       */
    /*===============================*/
 
-   gensprintf(buffer,"%s name",constructClass->constructName);
+   gensnprintf(buffer,sizeof(buffer),"%s name",constructClass->constructName);
 
    constructName = GetConstructName(context,command,buffer);
    if (constructName == NULL) return;
@@ -536,7 +539,7 @@ CLIPSLexeme *GetConstructModuleCommand(
    /* we want to determine its module.        */
    /*=========================================*/
 
-   gensprintf(buffer,"%s name",constructClass->constructName);
+   gensnprintf(buffer,sizeof(buffer),"%s name",constructClass->constructName);
 
    constructName = GetConstructName(context,command,buffer);
    if (constructName == NULL) return FalseSymbol(theEnv);

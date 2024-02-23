@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  12/07/17             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                  EVALUATION MODULE                  */
    /*******************************************************/
@@ -65,6 +65,11 @@
 /*                                                           */
 /*            Modified GetFunctionReference to handle module */
 /*            specifier for funcall.                         */
+/*                                                           */
+/*      6.41: Added FCBPopArgument function.                 */
+/*                                                           */
+/*            Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -1127,7 +1132,7 @@ static void PrintCAddress(
 
    WriteString(theEnv,logicalName,"<Pointer-C-");
 
-   gensprintf(buffer,"%p",((CLIPSExternalAddress *) theValue)->contents);
+   gensnprintf(buffer,sizeof(buffer),"%p",((CLIPSExternalAddress *) theValue)->contents);
    WriteString(theEnv,logicalName,buffer);
    WriteString(theEnv,logicalName,">");
   }
@@ -1455,6 +1460,19 @@ void FCBAppendMultifield(
    
    theValue.multifieldValue = pv;
    FCBAppend(theFCB,&theValue);
+  }
+
+/*******************/
+/* FCBPopArgument: */
+/*******************/
+void FCBPopArgument(
+  FunctionCallBuilder *theFCB)
+  {
+   if (theFCB->length > 0)
+     {
+      Release(theFCB->fcbEnv,theFCB->contents[theFCB->length-1].header);
+      theFCB->length--;
+     }
   }
 
 /***********/

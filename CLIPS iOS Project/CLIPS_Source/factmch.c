@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/25/16             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                 FACT MATCH MODULE                   */
    /*******************************************************/
@@ -45,6 +45,9 @@
 /*                                                           */
 /*            Watch facts for modify command only prints     */
 /*            changed slots.                                 */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -745,12 +748,12 @@ static void PatternNetErrorMessage(
    /*==============================================*/
 
    if (FactData(theEnv)->CurrentPatternFact->whichDeftemplate->implied)
-     { gensprintf(buffer,"   Problem resides in field #%d\n",patternPtr->whichField); }
+     { gensnprintf(buffer,sizeof(buffer),"   Problem resides in field #%d\n",patternPtr->whichField); }
    else
      {
       theSlots = FactData(theEnv)->CurrentPatternFact->whichDeftemplate->slotList;
       for (i = 0; i < patternPtr->whichSlot; i++) theSlots = theSlots->next;
-      gensprintf(buffer,"   Problem resides in slot %s\n",theSlots->slotName->contents);
+      gensnprintf(buffer,sizeof(buffer),"   Problem resides in slot %s\n",theSlots->slotName->contents);
      }
 
    WriteString(theEnv,STDERR,buffer);

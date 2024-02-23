@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,20 +20,19 @@
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="100" y="100" width="480" height="360"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="400" height="300"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                         <rect key="frame" x="-1" y="-1" width="482" height="337"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="GFd-Ma-Ofh">
+                        <clipView key="contentView" drawsBackground="NO" id="GFd-Ma-Ofh">
                             <rect key="frame" x="1" y="1" width="465" height="335"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="8" customClass="CLIPSTerminalView">
+                                <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="8" customClass="CLIPSTerminalView">
                                     <rect key="frame" x="0.0" y="40" width="465" height="335"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -59,13 +58,16 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="48">
-                        <rect key="frame" x="459" y="340" width="16" height="16"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                    </progressIndicator>
-                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="54">
-                        <rect key="frame" x="31" y="340" width="355" height="13"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="57">
+                        <rect key="frame" x="6" y="340" width="23" height="13"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Dir:" id="61">
+                            <font key="font" metaFont="systemBold" size="10"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="54">
+                        <rect key="frame" x="31" y="340" width="232" height="13"/>
                         <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" title="The quick brown fox jumped over the lazy dogs" id="60">
                             <font key="font" metaFont="label"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -75,18 +77,8 @@
                             <binding destination="-2" name="value" keyPath="displayDirectory" id="56"/>
                         </connections>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="57">
-                        <rect key="frame" x="6" y="340" width="23" height="13"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Dir:" id="61">
-                            <font key="font" metaFont="systemBold" size="10"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="50">
-                        <rect key="frame" x="401" y="338" width="50" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="50">
+                        <rect key="frame" x="405" y="338" width="46" height="17"/>
                         <buttonCell key="cell" type="roundRect" title="Pause" bezelStyle="roundedRect" alignment="center" controlSize="small" enabled="NO" borderStyle="border" inset="2" id="59">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -95,7 +87,25 @@
                             <action selector="pauseContinue:" target="-2" id="53"/>
                         </connections>
                     </button>
+                    <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="48">
+                        <rect key="frame" x="459" y="339" width="16" height="16"/>
+                    </progressIndicator>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="7" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="-1" id="FHi-Nm-5Lb"/>
+                    <constraint firstItem="50" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="54" secondAttribute="trailing" constant="17" id="Hye-xJ-Gtk"/>
+                    <constraint firstAttribute="trailing" secondItem="48" secondAttribute="trailing" constant="5" id="S9L-xh-l6m"/>
+                    <constraint firstItem="57" firstAttribute="centerY" secondItem="54" secondAttribute="centerY" id="dNF-UD-DaK"/>
+                    <constraint firstItem="50" firstAttribute="centerY" secondItem="48" secondAttribute="centerY" id="dsO-FJ-S7s"/>
+                    <constraint firstItem="48" firstAttribute="leading" secondItem="50" secondAttribute="trailing" constant="8" symbolic="YES" id="jnk-pC-w4w"/>
+                    <constraint firstAttribute="trailing" secondItem="7" secondAttribute="trailing" constant="-1" id="kql-Qc-PuM"/>
+                    <constraint firstItem="54" firstAttribute="leading" secondItem="57" secondAttribute="trailing" constant="6" id="tvT-eJ-ndI"/>
+                    <constraint firstItem="57" firstAttribute="top" secondItem="6" secondAttribute="top" constant="7" id="vFB-qc-fKu"/>
+                    <constraint firstItem="57" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="8" id="vVE-vx-w1R"/>
+                    <constraint firstItem="54" firstAttribute="centerY" secondItem="50" secondAttribute="centerY" id="za7-0d-3hk"/>
+                    <constraint firstAttribute="bottom" secondItem="7" secondAttribute="bottom" constant="-1" id="zhp-I7-ZnR"/>
+                    <constraint firstItem="7" firstAttribute="top" secondItem="6" secondAttribute="top" constant="24" id="zlf-rP-yJ5"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="16"/>

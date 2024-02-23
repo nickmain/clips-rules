@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.41  05/10/21             */
+   /*            CLIPS Version 6.41  01/27/23             */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -114,6 +114,17 @@
 /*            containing unicode characters.                 */
 /*                                                           */
 /*      6.41: Added SYSTEM_FUNCTION compiler flag.           */
+/*                                                           */
+/*            Function GenReadBinary returns the number of   */
+/*            bytes read.                                    */
+/*                                                           */
+/*            Added gensnprint function.                     */
+/*                                                           */
+/*            Fixed compiler warning caused by using &       */
+/*            instead of &&.                                 */
+/*                                                           */
+/*            Changed gengetcwd buffer length parameter from */
+/*            int to size_t.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -363,6 +374,27 @@ int gensprintf(
    return rv;
   }
 
+/*******************************************/
+/* gensnprintf: Generic snprintf function. */
+/*******************************************/
+int gensnprintf(
+  char *buffer,
+  size_t bufferSize,
+  const char *restrictStr,
+  ...)
+  {
+   va_list args;
+   int rv;
+
+   va_start(args,restrictStr);
+
+   rv = vsnprintf(buffer,bufferSize,restrictStr,args);
+
+   va_end(args);
+
+   return rv;
+  }
+
 /******************************************************/
 /* genrand: Generic random number generator function. */
 /******************************************************/
@@ -386,7 +418,7 @@ void genseed(
 /*********************************************/
 char *gengetcwd(
   char *buffer,
-  int buflength)
+  size_t buflength)
   {
 #if MAC_XCD
    return(getcwd(buffer,buflength));
@@ -595,7 +627,7 @@ FILE *GenOpen(
    /* (BOM): 0xEF,0xBB,0xBF.              */
    /*=====================================*/
 
-   if ((theFile != NULL) & (strcmp(accessType,"r") == 0))
+   if ((theFile != NULL) && (strcmp(accessType,"r") == 0))
      {
       int theChar;
 
@@ -743,28 +775,31 @@ bool GenOpenReadBinary(
 /* GenReadBinary: Generic and machine specific */
 /*   code for reading from a file.             */
 /***********************************************/
-void GenReadBinary(
+size_t GenReadBinary(
   Environment *theEnv,
   void *dataPtr,
   size_t size)
   {
 #if WIN_MVC
    char *tempPtr;
+   size_t rv = 0;
 
    tempPtr = (char *) dataPtr;
    while (size > INT_MAX)
      {
-      _read(SystemDependentData(theEnv)->BinaryFileHandle,tempPtr,INT_MAX);
+      rv += _read(SystemDependentData(theEnv)->BinaryFileHandle,tempPtr,INT_MAX);
       size -= INT_MAX;
       tempPtr = tempPtr + INT_MAX;
      }
 
    if (size > 0)
-     { _read(SystemDependentData(theEnv)->BinaryFileHandle,tempPtr,(unsigned int) size); }
+     { rv += _read(SystemDependentData(theEnv)->BinaryFileHandle,tempPtr,(unsigned int) size); }
+     
+   return rv;
 #endif
 
 #if (! WIN_MVC)
-   fread(dataPtr,size,1,SystemDependentData(theEnv)->BinaryFP);
+   return fread(dataPtr,size,1,SystemDependentData(theEnv)->BinaryFP);
 #endif
   }
 

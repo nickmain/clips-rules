@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  12/30/16             */
+   /*            CLIPS Version 6.41  12/04/22             */
    /*                                                     */
    /*                 FACT HASHING MODULE                 */
    /*******************************************************/
@@ -45,6 +45,9 @@
 /*                                                           */
 /*            Assert returns duplicate fact. FALSE is now    */
 /*            returned only if an error occurs.              */
+/*                                                           */
+/*      6.41: Used gensnprintf in place of gensprintf and.   */
+/*            sprintf.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -423,7 +426,7 @@ void ShowFactHashTableCommand(
 
       if (count != 0)
         {
-         gensprintf(buffer,"%4lu: %4d\n",i,count);
+         gensnprintf(buffer,sizeof(buffer),"%4lu: %4d\n",i,count);
          WriteString(theEnv,STDOUT,buffer);
         }
      }

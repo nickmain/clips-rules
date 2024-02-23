@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/30/16            */
+   /*             CLIPS Version 6.41  11/10/22            */
    /*                                                     */
    /*          DEFTEMPLATE UTILITIES HEADER FILE          */
    /*******************************************************/
@@ -46,6 +46,9 @@
 /*            Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
+/*      6.41: Added error message for using ordered facts    */
+/*            with functions expecting deftemplate facts.    */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_tmpltutl
@@ -71,7 +74,8 @@
    void                           UpdateDeftemplateScope(Environment *);
    struct templateSlot           *FindSlot(Deftemplate *,CLIPSLexeme *,unsigned short *);
    Deftemplate                   *CreateImpliedDeftemplate(Environment *,CLIPSLexeme *,bool);
-
+   void                           OrderedFactFunctionError(Environment *,const char *);
+  
 #endif /* _H_tmpltutl */
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/17/17            */
+   /*             CLIPS Version 6.41  11/05/22            */
    /*                                                     */
    /*               EVALUATION HEADER FILE                */
    /*******************************************************/
@@ -61,6 +61,8 @@
 /*            UDF redesign.                                  */
 /*                                                           */
 /*            Removed DATA_OBJECT_ARRAY primitive type.      */
+/*                                                           */
+/*      6.41: Added FCBPopArgument function.                 */
 /*                                                           */
 /*************************************************************/
 
@@ -189,6 +191,7 @@ struct evaluationData
    void                           FCBAppendFact(FunctionCallBuilder *,Fact *);
    void                           FCBAppendInstance(FunctionCallBuilder *,Instance *);
    void                           FCBAppendMultifield(FunctionCallBuilder *,Multifield *);
+   void                           FCBPopArgument(FunctionCallBuilder *);
    void                           FCBDispose(FunctionCallBuilder *);
    void                           FCBReset(FunctionCallBuilder *);
    FunctionCallBuilderError       FCBCall(FunctionCallBuilder *,const char *,CLIPSValue *);
